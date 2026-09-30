@@ -1,41 +1,84 @@
 ---
-import PageHero from './PageHero.astro';
 import { firm, type Locale } from '@/lib/site';
 interface Props { locale: Locale; kind: 'privacy' | 'legal'; }
 const { locale, kind } = Astro.props;
 const isPrivacy = kind === 'privacy';
 const c = locale === 'en' ? {
-  privacy: { eyebrow: 'Privacy', title: 'Your information deserves restraint.', body: 'This notice explains what the website collects, why it is used and the choices available to you.' },
-  legal: { eyebrow: 'Legal notice', title: 'Information about this website.', body: 'Publisher, contact and responsible-use information for the Munge Eba Law website.' },
+  privacy: { eyebrow: 'Privacy', title: 'Privacy notice', body: 'What this website collects and how consultation enquiries are handled.' },
+  legal: { eyebrow: 'Legal notice', title: 'Website information', body: 'Publisher, contact and responsible-use information for this website.' },
+  updated: 'Last updated 1 October 2026', contents: 'On this page',
 } : {
-  privacy: { eyebrow: 'Confidentialité', title: 'Vos informations méritent la retenue.', body: 'Cette notice explique les données collectées par le site, leur utilisation et les choix dont vous disposez.' },
-  legal: { eyebrow: 'Mentions légales', title: 'Informations relatives à ce site.', body: 'Éditeur, coordonnées et conditions d’utilisation du site de Munge Eba Law.' },
+  privacy: { eyebrow: 'Confidentialité', title: 'Notice de confidentialité', body: 'Les données collectées par ce site et le traitement des demandes de consultation.' },
+  legal: { eyebrow: 'Mentions légales', title: 'Informations sur le site', body: 'Éditeur, coordonnées et conditions d’utilisation de ce site.' },
+  updated: 'Dernière mise à jour : 1er octobre 2026', contents: 'Sur cette page',
 };
 const head = c[kind];
+type LegalSection = [id: string, title: string, body: string];
+const privacySections: LegalSection[] = locale === 'en' ? [
+  ['information', 'Information provided through the form', 'When you request a consultation, the form collects the name, email address, telephone number, selected area of enquiry and message that you choose to provide. Technical request data may be processed by the hosting provider to operate and secure the website.'],
+  ['purpose', 'Why the information is used', 'The information is used to review the enquiry, respond to you and determine whether an appointment can be offered. Submitting the form does not create a lawyer–client relationship.'],
+  ['confidentiality', 'Confidential and urgent information', 'Do not send confidential documents, deadlines, privileged material or urgent instructions through this website. The firm must expressly agree to act before a lawyer–client relationship begins.'],
+  ['providers', 'Service providers and retention', 'The website is intended to use Vercel for hosting and Resend for delivery of form enquiries. These providers process the limited data needed to perform those services. Enquiry information is retained only for as long as reasonably necessary to respond and meet applicable legal, professional and security obligations.'],
+  ['choices', 'Your choices', `You may request access, correction or deletion of personal information, subject to applicable legal and professional obligations, by emailing ${firm.email}.`],
+] : [
+  ['information', 'Informations transmises par le formulaire', 'Lorsque vous demandez une consultation, le formulaire recueille le nom, l’adresse électronique, le numéro de téléphone, le domaine sélectionné et le message que vous choisissez de transmettre. Des données techniques de requête peuvent être traitées par l’hébergeur afin d’exploiter et de sécuriser le site.'],
+  ['purpose', 'Utilisation des informations', 'Les informations servent à examiner la demande, à vous répondre et à déterminer si un rendez-vous peut être proposé. L’envoi du formulaire ne crée pas de relation avocat–client.'],
+  ['confidentiality', 'Informations confidentielles et urgentes', 'N’envoyez pas de documents confidentiels, de délais, d’éléments privilégiés ou d’instructions urgentes par ce site. Le cabinet doit accepter expressément d’intervenir avant qu’une relation avocat–client ne commence.'],
+  ['providers', 'Prestataires et conservation', 'Le site est destiné à utiliser Vercel pour l’hébergement et Resend pour la transmission des demandes du formulaire. Ces prestataires traitent les données limitées nécessaires à ces services. Les informations sont conservées uniquement pendant la durée raisonnablement nécessaire pour répondre et respecter les obligations légales, professionnelles et de sécurité applicables.'],
+  ['choices', 'Vos choix', `Vous pouvez demander l’accès, la rectification ou la suppression de vos informations, sous réserve des obligations légales et professionnelles applicables, en écrivant à ${firm.email}.`],
+];
+const legalSections: LegalSection[] = locale === 'en' ? [
+  ['publisher', 'Publisher', `${firm.legalName}, represented by ${firm.principal}, ${firm.title.en}. Office: ${firm.address.en} Email: ${firm.email}. Telephone: ${firm.phoneDisplay}.`],
+  ['information', 'General information, not legal advice', 'The content of this website is general information only. It is not legal advice for a specific matter. Laws and procedures may change, and any legal assessment depends on the facts.'],
+  ['relationship', 'No lawyer–client relationship', 'Visiting this site, sending an email or submitting a consultation request does not create a lawyer–client relationship. The firm must first review the request and expressly confirm an engagement.'],
+  ['reuse', 'Use of website materials', 'Website text, design and brand materials may not be reproduced for commercial use without prior permission from the relevant rights holder.'],
+] : [
+  ['publisher', 'Éditeur', `${firm.legalName}, représenté par ${firm.principal}, ${firm.title.fr}. Cabinet : ${firm.address.fr} Courriel : ${firm.email}. Téléphone : ${firm.phoneDisplay}.`],
+  ['information', 'Information générale, non conseil juridique', 'Le contenu de ce site est fourni à titre d’information générale. Il ne constitue pas un avis juridique relatif à un dossier particulier. Les règles et procédures peuvent évoluer et toute analyse juridique dépend des faits.'],
+  ['relationship', 'Absence de relation avocat–client', 'La visite du site, l’envoi d’un courriel ou d’une demande de consultation ne crée pas de relation avocat–client. Le cabinet doit d’abord examiner la demande et confirmer expressément son intervention.'],
+  ['reuse', 'Utilisation des contenus du site', 'Les textes, la conception et les éléments de marque du site ne peuvent être reproduits à des fins commerciales sans l’autorisation préalable du titulaire des droits concerné.'],
+];
+const sections: LegalSection[] = isPrivacy ? privacySections : legalSections;
 ---
-<PageHero {...head} />
-<section class="content-section"><div class="container prose">
-  {isPrivacy ? (locale === 'en' ? <>
-    <h2>Information we collect</h2><p>When you request a consultation, we collect the name, email address, telephone number, selected area of enquiry and message that you choose to provide. Basic technical information may also be processed to protect the form from abuse and to understand aggregate website performance.</p>
-    <h2>Why we use it</h2><p>We use enquiry information only to perform an initial conflict check, understand the nature of the request and respond about a possible consultation. Sending an enquiry does not create a lawyer–client relationship.</p>
-    <h2>Confidential and urgent information</h2><p>Do not send confidential documents, court deadlines, privileged material or urgent instructions through this website. A lawyer–client relationship begins only after the firm expressly agrees to act.</p>
-    <h2>Service providers and retention</h2><p>The website may use Vercel for hosting, Resend for transactional email and privacy-conscious aggregate analytics. These providers process limited data to deliver their services. Enquiries are retained only as long as reasonably necessary for conflict checking, response, legal obligations and security.</p>
-    <h2>Your choices</h2><p>You may request access, correction or deletion of personal information, subject to legal and professional obligations, by emailing <a href={`mailto:${firm.email}`}>{firm.email}</a>.</p>
-  </> : <>
-    <h2>Données collectées</h2><p>Lorsque vous demandez une consultation, nous collectons le nom, l’adresse électronique, le numéro de téléphone, le domaine sélectionné et le message que vous choisissez de transmettre. Des informations techniques élémentaires peuvent aussi être traitées afin de protéger le formulaire et de mesurer les performances globales du site.</p>
-    <h2>Finalités</h2><p>Les informations sont utilisées uniquement pour effectuer une première vérification de conflit, comprendre la demande et répondre au sujet d’une éventuelle consultation. L’envoi d’une demande ne crée pas de relation avocat–client.</p>
-    <h2>Informations confidentielles et urgentes</h2><p>N’envoyez pas de documents confidentiels, de délais judiciaires, d’éléments privilégiés ou d’instructions urgentes via ce site. La relation avocat–client ne commence qu’après acceptation expresse du dossier par le cabinet.</p>
-    <h2>Prestataires et conservation</h2><p>Le site peut utiliser Vercel pour l’hébergement, Resend pour les courriels transactionnels et une mesure d’audience agrégée respectueuse de la vie privée. Les demandes sont conservées uniquement pendant la durée raisonnablement nécessaire à la vérification de conflit, à la réponse, aux obligations légales et à la sécurité.</p>
-    <h2>Vos droits</h2><p>Vous pouvez demander l’accès, la rectification ou la suppression de vos informations, sous réserve des obligations légales et professionnelles, en écrivant à <a href={`mailto:${firm.email}`}>{firm.email}</a>.</p>
-  </>) : (locale === 'en' ? <>
-    <h2>Publisher</h2><p>{firm.legalName}, led by {firm.principal}. Office: {firm.address.en} Email: <a href={`mailto:${firm.email}`}>{firm.email}</a>. Telephone: <a href={`tel:${firm.phoneHref}`}>{firm.phoneDisplay}</a>.</p>
-    <h2>Legal information, not legal advice</h2><p>The contents of this website are general information only. They are not legal advice and should not be relied on for a specific matter. Laws and procedures may change, and outcomes depend on the facts.</p>
-    <h2>No lawyer–client relationship</h2><p>Visiting this site, sending an email or submitting a consultation request does not create a lawyer–client relationship. The firm must first complete its checks and expressly confirm an engagement.</p>
-    <h2>Intellectual property</h2><p>Unless otherwise stated, the site design, copy and brand materials belong to {firm.legalName}. They may not be reproduced for commercial use without permission.</p>
-  </> : <>
-    <h2>Éditeur</h2><p>{firm.legalName}, dirigé par {firm.principal}. Cabinet : {firm.address.fr} Courriel : <a href={`mailto:${firm.email}`}>{firm.email}</a>. Téléphone : <a href={`tel:${firm.phoneHref}`}>{firm.phoneDisplay}</a>.</p>
-    <h2>Information générale, non conseil juridique</h2><p>Le contenu de ce site est fourni à titre d’information générale. Il ne constitue pas un avis juridique et ne doit pas fonder une décision relative à un dossier particulier. Les règles et procédures peuvent évoluer et tout résultat dépend des faits.</p>
-    <h2>Absence de relation avocat–client</h2><p>La visite du site, l’envoi d’un courriel ou d’une demande de consultation ne crée pas de relation avocat–client. Le cabinet doit effectuer ses vérifications et confirmer expressément son intervention.</p>
-    <h2>Propriété intellectuelle</h2><p>Sauf indication contraire, la conception du site, ses textes et ses éléments de marque appartiennent à {firm.legalName}. Toute reproduction commerciale est interdite sans autorisation.</p>
-  </>)}
-</div></section>
+
+<header class="legal-hero">
+  <div class="container legal-hero__grid">
+    <p class="eyebrow">{head.eyebrow}</p>
+    <div><h1>{head.title}</h1><p>{head.body}</p><span>{c.updated}</span></div>
+  </div>
+</header>
+
+<section class="legal-content content-section">
+  <div class="container legal-content__grid">
+    <aside data-reveal>
+      <span>{c.contents}</span>
+      <nav>{sections.map(([id, title]) => <a href={`#${id}`}>{title}</a>)}</nav>
+    </aside>
+    <div class="prose">
+      {sections.map(([id, title, body]) => <section id={id} data-reveal><h2>{title}</h2><p>{body}</p></section>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .legal-hero { padding: 10rem 0 4.5rem; background: var(--ink); color: var(--paper-bright); }
+  .legal-hero__grid { display: grid; grid-template-columns: .35fr 1fr; gap: clamp(3rem, 9vw, 10rem); }
+  .legal-hero .eyebrow { color: var(--gold-light); }
+  .legal-hero h1 { margin: 0; font: 500 clamp(3.6rem, 7vw, 8rem)/.88 var(--serif); letter-spacing: -.05em; }
+  .legal-hero div > p { max-width: 40rem; margin: 1.7rem 0; color: rgba(255,255,255,.67); line-height: 1.7; }
+  .legal-hero div > span { color: rgba(255,255,255,.45); font-size: .61rem; letter-spacing: .1em; text-transform: uppercase; }
+  .legal-content { background: var(--paper-bright); }
+  .legal-content__grid { display: grid; grid-template-columns: minmax(12rem, .35fr) 1fr; gap: clamp(4rem, 10vw, 11rem); }
+  .legal-content aside { align-self: start; position: sticky; top: 8.5rem; }
+  .legal-content aside > span { display: block; margin-bottom: 1.2rem; color: var(--oxblood); font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .legal-content nav { display: grid; border-top: 1px solid var(--line); }
+  .legal-content nav a { padding: .9rem 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .72rem; line-height: 1.4; }
+  .legal-content .prose { max-width: 46rem; }
+  .legal-content .prose section { scroll-margin-top: 8rem; padding-bottom: 2rem; }
+  .legal-content .prose h2 { margin-top: 0; padding-top: 2.5rem; border-top: 1px solid var(--line); }
+  .legal-content .prose section:first-child h2 { padding-top: 0; border-top: 0; }
+  @media(max-width: 800px) {
+    .legal-hero__grid, .legal-content__grid { grid-template-columns: 1fr; gap: 3rem; }
+    .legal-content aside { position: static; }
+  }
+</style>

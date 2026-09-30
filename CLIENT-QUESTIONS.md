@@ -1,4 +1,6 @@
-# Questions à envoyer à Me Munge Eba Ngwesse
+# Questionnaire envoyé à Me Munge Eba Ngwesse
+
+> Statut : réponses reçues le 30 septembre 2026. Consulter `CLIENT-ANSWERS.md` comme source de vérité ; ce fichier conserve la liste des questions envoyées.
 
 Bonjour Maître,
 
@@ -55,7 +57,7 @@ Nous préparons le nouveau site bilingue de **Munge Eba & Co. Law Firm**. La str
 
 26. Confirmez l’adresse à publier : « Rue pavée, en face de l’entrée principale de Camtel Bépanda. Premier bâtiment à droite, dernier niveau à droite, Douala. »
 27. Existe-t-il un repère supplémentaire, un nom d’immeuble, un quartier administratif, un code postal ou un lien Google Maps précis ?
-28. Confirmez le téléphone : **+237 677 275 129**.
+28. Confirmez le téléphone. Le numéro finalement confirmé dans la réponse est **+237 658 789 253**.
 29. Confirmez l’email : **mungeebalaw@gmail.com**.
 
 ## 8. Image et contenu

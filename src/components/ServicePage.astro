@@ -6,27 +6,74 @@ interface Props { locale: Locale; slug: string; }
 const { locale, slug } = Astro.props;
 const service = services.find((item) => item.slug === slug)!;
 const item = service[locale];
+const copy = locale === 'en'
+  ? {
+      eyebrow: `Practice area ${service.number}`,
+      scope: 'How the work is framed',
+      context: 'How we approach the work',
+      note: 'Every matter turns on its own facts and applicable law. An initial paid consultation allows the firm to understand the request, check whether it can assist and agree the scope of any engagement.',
+      action: 'Request a consultation',
+      back: 'All practice areas',
+    }
+  : {
+      eyebrow: `Domaine ${service.number}`,
+      scope: 'Cadre de travail',
+      context: 'Notre approche',
+      note: 'Chaque dossier dépend de ses faits propres et du droit applicable. Une première consultation payante permet au cabinet de comprendre la demande, de vérifier s’il peut intervenir et de convenir du périmètre de la mission.',
+      action: 'Demander une consultation',
+      back: 'Tous les domaines',
+    };
 ---
-<PageHero eyebrow={`${locale === 'en' ? 'Expertise' : 'Expertise'} · ${service.number}`} title={item.title} body={item.summary} />
+
+<PageHero eyebrow={copy.eyebrow} title={item.title} body={item.summary} />
+
 <section class="service-detail content-section">
   <div class="container service-detail__grid">
-    <aside data-reveal><span>{locale === 'en' ? 'Selected matters' : 'Interventions sélectionnées'}</span></aside>
-    <div data-reveal>
-      <p class="service-detail__intro serif">{item.description}</p>
-      <ul>{item.matters.map((matter) => <li>{matter}<span>↗</span></li>)}</ul>
-      <p class="service-detail__note">{locale === 'en' ? 'Every matter turns on its own facts. An initial consultation helps us understand the position and whether we are the right counsel for it.' : 'Chaque dossier dépend de ses faits propres. Une première consultation nous permet de comprendre la situation et de déterminer si notre cabinet est le conseil approprié.'}</p>
-      <a class="button" href={pathFor(locale, 'contact')}>{locale === 'en' ? 'Discuss your matter' : 'Échanger sur votre situation'}</a>
+    <aside data-reveal>
+      <span>{copy.scope}</span>
+      <a href={pathFor(locale, 'services')}>{copy.back}</a>
+    </aside>
+    <div class="service-detail__main">
+      <p class="service-detail__intro" data-reveal>{item.description}</p>
+      <div class="service-detail__scope">
+        {item.matters.map((matter, index) => (
+          <div data-reveal><span>0{index + 1}</span><p>{matter}</p></div>
+        ))}
+      </div>
+      <div class="service-detail__engagement" data-reveal>
+        <span>{copy.context}</span>
+        <p>{copy.note}</p>
+      </div>
+      <a class="button" href={pathFor(locale, 'contact')} data-reveal>{copy.action}</a>
     </div>
   </div>
 </section>
+
 <ContactForm locale={locale} compact />
+
 <style>
-  .service-detail__grid { display: grid; grid-template-columns: .42fr 1fr; gap: 6rem; }
-  .service-detail aside span { color: var(--oxblood); font-size: .65rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
-  .service-detail__intro { margin: 0 0 4rem; font-size: clamp(2rem, 3.5vw, 4rem); line-height: 1.08; letter-spacing: -.025em; }
-  .service-detail ul { list-style: none; padding: 0; margin: 0 0 3rem; border-top: 1px solid var(--line); }
-  .service-detail li { display: flex; justify-content: space-between; gap: 2rem; padding: 1.4rem 0; border-bottom: 1px solid var(--line); }
-  .service-detail li span { color: var(--gold); }
-  .service-detail__note { max-width: 40rem; margin: 0 0 2.5rem; color: var(--muted); line-height: 1.7; }
-  @media(max-width: 760px){ .service-detail__grid { grid-template-columns: 1fr; gap: 2rem; } }
+  .service-detail { background: var(--paper-bright); }
+  .service-detail__grid { display: grid; grid-template-columns: minmax(11rem, .35fr) 1fr; gap: clamp(4rem, 10vw, 11rem); }
+  .service-detail aside { align-self: start; position: sticky; top: 9rem; display: grid; gap: 2rem; }
+  .service-detail aside span { color: var(--oxblood); font-size: .63rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+  .service-detail aside a { width: fit-content; border-bottom: 1px solid currentColor; padding-bottom: .3rem; color: var(--muted); font-size: .64rem; }
+  .service-detail__intro { max-width: 19ch; margin: 0 0 clamp(4rem, 7vw, 7rem); font: 500 clamp(2.2rem, 4.2vw, 5rem)/1.03 var(--serif); letter-spacing: -.035em; }
+  .service-detail__scope { display: grid; grid-template-columns: repeat(3, 1fr); border-block: 1px solid var(--line); }
+  .service-detail__scope > div { min-height: 15rem; padding: 1.4rem 1.6rem 2rem 0; border-right: 1px solid var(--line); }
+  .service-detail__scope > div:not(:first-child) { padding-left: 1.6rem; }
+  .service-detail__scope > div:last-child { border-right: 0; }
+  .service-detail__scope span { color: var(--oxblood); font-size: .61rem; font-weight: 700; }
+  .service-detail__scope p { margin: 5rem 0 0; font: 500 clamp(1.35rem, 2vw, 2rem)/1.08 var(--serif); }
+  .service-detail__engagement { display: grid; grid-template-columns: minmax(10rem, .35fr) 1fr; gap: 3rem; margin: clamp(4rem, 7vw, 7rem) 0 3rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+  .service-detail__engagement span { color: var(--muted); font-size: .61rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .service-detail__engagement p { max-width: 42rem; margin: 0; color: var(--muted); line-height: 1.75; }
+  @media(max-width: 820px) {
+    .service-detail__grid { grid-template-columns: 1fr; gap: 3rem; }
+    .service-detail aside { position: static; grid-template-columns: 1fr auto; }
+    .service-detail__scope { grid-template-columns: 1fr; }
+    .service-detail__scope > div, .service-detail__scope > div:not(:first-child) { min-height: auto; padding: 1.3rem 0 2rem; border-right: 0; border-bottom: 1px solid var(--line); }
+    .service-detail__scope > div:last-child { border-bottom: 0; }
+    .service-detail__scope p { margin-top: 2rem; }
+    .service-detail__engagement { grid-template-columns: 1fr; gap: 1.2rem; }
+  }
 </style>

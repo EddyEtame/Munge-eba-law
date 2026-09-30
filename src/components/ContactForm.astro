@@ -1,75 +1,99 @@
 ---
-import { content, firm, type Locale } from '@/lib/site';
+import { content, firm, pathFor, type Locale } from '@/lib/site';
 interface Props { locale: Locale; compact?: boolean; }
 const { locale, compact = false } = Astro.props;
 const t = content[locale].consultation;
 ---
 
-<section class:list={['consultation', { 'consultation--compact': compact }]} id="consultation">
-  <div class="container consultation__grid">
-    <div class="consultation__copy" data-reveal>
-      <p class="eyebrow">{t.eyebrow}</p>
-      <h2 class="section-title">{t.title}</h2>
-      <p class="lede">{t.body}</p>
-      <div class="consultation__direct">
-        <a href={`mailto:${firm.email}`}><span>Email</span>{firm.email}</a>
-        <a href={`tel:${firm.phoneHref}`}><span>Telephone</span>{firm.phoneDisplay}</a>
+{compact ? (
+  <section class="contact-invite">
+    <div class="container contact-invite__grid">
+      <div data-reveal>
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h2>{locale === 'en' ? 'Discuss your matter with the firm.' : 'Échangez avec le cabinet sur votre dossier.'}</h2>
+      </div>
+      <div class="contact-invite__action" data-reveal>
+        <p>{locale === 'en' ? 'Initial consultations are paid. Remote consultations are available by appointment.' : 'La première consultation est payante. Les consultations à distance sont possibles sur rendez-vous.'}</p>
+        <a class="button" href={pathFor(locale, 'contact')}>{t.submit}</a>
       </div>
     </div>
-    <form class="consultation__form" data-contact-form data-reveal>
-      <input class="honeypot" type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true" />
-      <input type="hidden" name="locale" value={locale} />
-      <div class="field">
-        <label for="name">{locale === 'en' ? 'Full name' : 'Nom complet'}</label>
-        <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" />
-      </div>
-      <div class="form-row">
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required maxlength="160" />
-        </div>
-        <div class="field">
-          <label for="phone">{locale === 'en' ? 'Telephone' : 'Téléphone'}</label>
-          <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
+  </section>
+) : (
+  <section class="consultation" id="consultation">
+    <div class="container consultation__grid">
+      <div class="consultation__copy" data-reveal>
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h2 class="section-title">{t.title}</h2>
+        <p class="lede">{t.body}</p>
+        <div class="consultation__direct">
+          <a href={`mailto:${firm.email}`}><span>Email</span>{firm.email}</a>
+          <a href={`tel:${firm.phoneHref}`}><span>{locale === 'en' ? 'Telephone' : 'Téléphone'}</span>{firm.phoneDisplay}</a>
+          <div><span>{locale === 'en' ? 'Office hours' : 'Horaires'}</span><p>{firm.hours[locale]}</p></div>
+          <div><span>{locale === 'en' ? 'Remote' : 'À distance'}</span><p>{locale === 'en' ? 'Available by appointment' : 'Possible sur rendez-vous'}</p></div>
         </div>
       </div>
-      <div class="field">
-        <label for="matter">{locale === 'en' ? 'What would you like to discuss?' : 'Que souhaitez-vous aborder ?'}</label>
-        <select id="matter" name="matter" required>
-          <option value="">{locale === 'en' ? 'Select an area' : 'Choisir un domaine'}</option>
-          <option>Business & commercial / Droit des affaires</option>
-          <option>Dispute resolution / Contentieux</option>
-          <option>Property & land / Foncier et immobilier</option>
-          <option>Private client / Particuliers et famille</option>
-          <option>Other / Autre</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="message">{locale === 'en' ? 'Brief message' : 'Message bref'}</label>
-        <textarea id="message" name="message" rows="4" required maxlength="2000"></textarea>
-        <small>{locale === 'en' ? 'Please do not include confidential or time-sensitive information.' : 'N’incluez aucune information confidentielle ou urgente.'}</small>
-      </div>
-      <label class="consent">
-        <input type="checkbox" name="consent" required />
-        <span>{t.consent}</span>
-      </label>
-      <button class="button" type="submit" data-submit data-idle={t.submit} data-sending={t.sending}>{t.submit}</button>
-      <p class="form-status" data-form-status role="status" aria-live="polite" data-success={t.success} data-error={t.error}></p>
-    </form>
-  </div>
-</section>
+      <form class="consultation__form" data-contact-form data-reveal>
+        <input class="honeypot" type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <input type="hidden" name="locale" value={locale} />
+        <div class="field">
+          <label for="name">{locale === 'en' ? 'Full name' : 'Nom complet'}</label>
+          <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" />
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required maxlength="160" />
+          </div>
+          <div class="field">
+            <label for="phone">{locale === 'en' ? 'Telephone' : 'Téléphone'}</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="matter">{locale === 'en' ? 'What would you like to discuss?' : 'Que souhaitez-vous aborder ?'}</label>
+          <select id="matter" name="matter" required>
+            <option value="">{locale === 'en' ? 'Select an area' : 'Choisir un domaine'}</option>
+            <option>Business law / Droit des affaires</option>
+            <option>Human rights / Droits humains</option>
+            <option>Conflict management / Gestion des conflits</option>
+            <option>Other / Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">{locale === 'en' ? 'Brief message' : 'Message bref'}</label>
+          <textarea id="message" name="message" rows="4" required maxlength="2000"></textarea>
+          <small>{locale === 'en' ? 'Please do not include confidential or time-sensitive information.' : 'N’incluez aucune information confidentielle ou urgente.'}</small>
+        </div>
+        <label class="consent">
+          <input type="checkbox" name="consent" required />
+          <span>{t.consent}</span>
+        </label>
+        <button class="button" type="submit" data-submit data-idle={t.submit} data-sending={t.sending}>{t.submit}</button>
+        <p class="form-status" data-form-status role="status" aria-live="polite" data-success={t.success} data-error={t.error}></p>
+      </form>
+    </div>
+  </section>
+)}
 
 <style>
+  .contact-invite { padding: clamp(5rem, 9vw, 8rem) 0; background: var(--oxblood-dark); color: var(--paper-bright); }
+  .contact-invite__grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: clamp(4rem, 10vw, 10rem); align-items: end; }
+  .contact-invite .eyebrow { margin-bottom: 1.5rem; color: var(--gold-light); }
+  .contact-invite h2 { max-width: 13ch; margin: 0; font: 500 clamp(2.8rem, 5.8vw, 6.8rem)/.92 var(--serif); letter-spacing: -.045em; }
+  .contact-invite__action p { margin: 0 0 2rem; color: rgba(255,255,255,.66); line-height: 1.7; }
+  .contact-invite .button { background: var(--gold); color: var(--ink); }
+  .contact-invite .button:hover { background: var(--paper-bright); }
+
   .consultation { padding: clamp(6rem, 10vw, 10rem) 0; background: var(--paper-bright); }
-  .consultation--compact { padding-top: 2rem; }
   .consultation__grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: clamp(4rem, 9vw, 10rem); }
   .consultation__copy { position: sticky; top: 9rem; align-self: start; }
   .consultation .eyebrow { margin-bottom: 2rem; }
   .consultation .section-title { margin-bottom: 2rem; }
   .consultation__direct { margin-top: 4rem; display: grid; border-top: 1px solid var(--line); }
-  .consultation__direct a { display: flex; justify-content: space-between; gap: 2rem; padding: 1.2rem 0; border-bottom: 1px solid var(--line); font-size: .82rem; }
-  .consultation__direct span { color: var(--muted); font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-  .consultation__form { padding: clamp(1.5rem, 4vw, 4rem); border: 1px solid var(--line); background: var(--paper); }
+  .consultation__direct > * { display: flex; justify-content: space-between; gap: 2rem; padding: 1.1rem 0; border-bottom: 1px solid var(--line); font-size: .78rem; }
+  .consultation__direct span { flex: 0 0 auto; color: var(--muted); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .consultation__direct p { margin: 0; text-align: right; }
+  .consultation__form { padding: clamp(1.5rem, 4vw, 4rem); border-top: 3px solid var(--oxblood); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
   .field { display: grid; gap: .6rem; margin-bottom: 1.4rem; }
   .field label { color: var(--muted); font-size: .62rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
@@ -83,10 +107,13 @@ const t = content[locale].consultation;
   .form-status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--oxblood); font-size: .74rem; line-height: 1.5; }
   .honeypot { position: absolute !important; left: -10000px !important; }
   @media(max-width: 900px) {
-    .consultation__grid { grid-template-columns: 1fr; }
+    .contact-invite__grid, .consultation__grid { grid-template-columns: 1fr; }
     .consultation__copy { position: static; }
   }
-  @media(max-width: 560px) { .form-row { grid-template-columns: 1fr; gap: 0; } .consultation__form { margin-inline: -14px; } }
+  @media(max-width: 560px) {
+    .form-row { grid-template-columns: 1fr; gap: 0; }
+    .consultation__form { padding-inline: 1rem; }
+  }
 </style>
 
 <script>

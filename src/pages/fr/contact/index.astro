@@ -1,4 +1,18 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro'; import PageHero from '@/components/PageHero.astro'; import ContactForm from '@/components/ContactForm.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ContactForm from '@/components/ContactForm.astro';
 ---
-<BaseLayout title="Demander une consultation" description="Contactez Munge Eba Law à Bépanda, Douala, par formulaire sécurisé, courriel ou téléphone." locale="fr" transparentHeader><PageHero eyebrow="Consultation" title="Commençons par la clarté." body="Indiquez-nous la nature générale de votre situation et comment vous joindre. Nous vous répondrons au sujet de la prochaine étape appropriée." /><ContactForm locale="fr" compact /></BaseLayout>
+<BaseLayout
+  title="Demander une consultation"
+  description="Demandez une consultation payante et sur rendez-vous auprès de Munge Eba & Co. Law Firm à Bépanda, Douala, en personne ou à distance."
+  locale="fr"
+  transparentHeader
+>
+  <PageHero
+    eyebrow="Rendez-vous"
+    title="Demander une consultation."
+    body="Les consultations sont payantes, en personne ou à distance, et uniquement sur rendez-vous. Indiquez la nature générale de votre dossier ; la durée et le délai de réponse dépendent de celui-ci."
+  />
+  <ContactForm locale="fr" />
+</BaseLayout>

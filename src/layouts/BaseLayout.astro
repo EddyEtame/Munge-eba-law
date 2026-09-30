@@ -12,6 +12,7 @@ interface Props {
   image?: string;
   transparentHeader?: boolean;
   noindex?: boolean;
+  hasAlternate?: boolean;
 }
 
 const {
@@ -21,10 +22,11 @@ const {
   image = '/brand/munge-eba-logo-original.png',
   transparentHeader = false,
   noindex = false,
+  hasAlternate = true,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const pageTitle = title === firm.shortName ? title : `${title} · ${firm.shortName}`;
+const pageTitle = title === firm.shortName || title === firm.legalName ? firm.legalName : `${title} · ${firm.shortName}`;
 const translatePath = (path: string, from: Locale) => {
   if (from === 'en') {
     if (path === '/') return '/fr/';
@@ -39,7 +41,8 @@ const translatePath = (path: string, from: Locale) => {
   if (path === '/fr/mentions-legales/') return '/legal/';
   return path.replace(/^\/fr/, '') || '/';
 };
-const langLinks = { current: canonical.href, alternate: new URL(translatePath(Astro.url.pathname, locale), Astro.site).href };
+const alternatePath = hasAlternate ? translatePath(Astro.url.pathname, locale) : undefined;
+const langLinks = alternatePath ? { current: canonical.href, alternate: new URL(alternatePath, Astro.site).href } : undefined;
 
 const schema = {
   '@context': 'https://schema.org',
@@ -49,7 +52,7 @@ const schema = {
   url: Astro.site?.href,
   logo: new URL('/brand/munge-eba-logo-original.png', Astro.site),
   image: new URL('/brand/munge-eba-logo-original.png', Astro.site),
-  telephone: firm.phoneHref,
+  telephone: firm.phoneDisplay,
   email: firm.email,
   areaServed: [{ '@type': 'Country', name: 'Cameroon' }, { '@type': 'City', name: 'Douala' }],
   address: {
@@ -58,7 +61,20 @@ const schema = {
     addressLocality: 'Douala',
     addressCountry: 'CM',
   },
-  founder: { '@type': 'Person', name: firm.principal },
+  employee: {
+    '@type': 'Person',
+    name: firm.principal,
+    jobTitle: firm.title.en,
+    description: firm.admission.en,
+    knowsLanguage: ['English', 'French'],
+  },
+  openingHoursSpecification: [{
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: '08:30',
+    closes: '17:30',
+  }],
+  availableLanguage: ['English', 'French'],
 };
 ---
 
@@ -72,10 +88,11 @@ const schema = {
     {noindex && <meta name="robots" content="noindex,nofollow" />}
     <title>{pageTitle}</title>
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang={locale} href={langLinks.current} />
-    <link rel="alternate" hreflang={locale === 'en' ? 'fr' : 'en'} href={langLinks.alternate} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
-    <link rel="icon" href="/brand/munge-eba-logo-transparent.png" type="image/png" />
+    {langLinks && <link rel="alternate" hreflang={locale} href={langLinks.current} />}
+    {langLinks && <link rel="alternate" hreflang={locale === 'en' ? 'fr' : 'en'} href={langLinks.alternate} />}
+    {langLinks && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
+    <link rel="icon" href="/brand/munge-eba-logo-64.png" type="image/png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="/brand/munge-eba-logo-192.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={firm.shortName} />
@@ -89,8 +106,8 @@ const schema = {
   </head>
   <body>
     <MotionLayer />
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <Header locale={locale} transparent={transparentHeader} />
+    <a class="skip-link" href="#main-content">{locale === 'en' ? 'Skip to content' : 'Aller au contenu'}</a>
+    <Header locale={locale} transparent={transparentHeader} {alternatePath} />
     <main class="site-main" id="main-content">
       <slot />
     </main>

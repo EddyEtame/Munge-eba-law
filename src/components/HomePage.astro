@@ -1,187 +1,203 @@
 ---
 import CinematicHero from './CinematicHero.astro';
 import ContactForm from './ContactForm.astro';
-import Testimonials from './Testimonials.astro';
-import { content, services, firm, pathFor, type Locale } from '@/lib/site';
+import { content, firm, pathFor, services, type Locale } from '@/lib/site';
+
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const t = content[locale];
+
+const facts = locale === 'en'
+  ? [
+      ['In practice since', firm.practiceSince],
+      ['Working languages', 'English and French'],
+      ['Consultations', 'By appointment'],
+    ]
+  : [
+      ['En exercice depuis', firm.practiceSince],
+      ['Langues de travail', 'Français et anglais'],
+      ['Consultations', 'Sur rendez-vous'],
+    ];
+
+const audiences = locale === 'en'
+  ? [
+      ['Foreign investors', 'Legal orientation for establishing and developing business activities in Cameroon.'],
+      ['NGOs', 'Counsel for organisations working on human-rights questions.'],
+      ['Individuals', 'Direct legal guidance shaped around the circumstances of the matter.'],
+    ]
+  : [
+      ['Investisseurs étrangers', 'Orientation juridique pour implanter et développer des activités au Cameroun.'],
+      ['ONG', 'Conseil des organisations actives sur les questions de droits humains.'],
+      ['Particuliers', 'Un conseil juridique direct, adapté aux circonstances du dossier.'],
+    ];
 ---
 
 <CinematicHero locale={locale} />
 
-<section class="manifesto" aria-label="Our point of view">
-  <div class="manifesto__marquee" aria-hidden="true">
-    <span>{t.home.statement}</span><i>✦</i><span>{t.home.statement}</span><i>✦</i>
+<section class="positioning content-section">
+  <div class="container positioning__grid">
+    <p class="eyebrow" data-reveal>{t.home.introEyebrow}</p>
+    <div>
+      <h2 class="section-title" data-reveal>{t.home.introTitle}</h2>
+      <p class="lede positioning__body" data-reveal>{t.home.introBody}</p>
+    </div>
+  </div>
+  <dl class="container fact-rail" data-reveal>
+    {facts.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+  </dl>
+</section>
+
+<section class="practice content-section" id="practice">
+  <div class="container practice__heading">
+    <div>
+      <p class="eyebrow" data-reveal>{t.home.expertiseEyebrow}</p>
+      <h2 class="section-title" data-reveal>{t.home.expertiseTitle}</h2>
+    </div>
+    <p class="lede" data-reveal>{t.home.expertiseBody}</p>
+  </div>
+  <div class="container practice__list">
+    {services.map((service) => {
+      const item = service[locale];
+      return (
+        <a class="practice-row" href={`${pathFor(locale, 'services')}${service.slug}/`} data-reveal>
+          <span class="practice-row__number">{service.number}</span>
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.summary}</p>
+          </div>
+          <span class="practice-row__action">{locale === 'en' ? 'View details' : 'Voir le détail'}</span>
+        </a>
+      );
+    })}
   </div>
 </section>
 
-<section class="introduction content-section" id="approach">
-  <div class="container introduction__grid">
-    <div class="introduction__header" data-reveal>
-      <p class="eyebrow">{t.home.introEyebrow}</p>
-      <h2 class="section-title">{t.home.introTitle}</h2>
+<section class="method content-section">
+  <div class="container method__grid">
+    <div class="method__heading">
+      <p class="eyebrow" data-reveal>{t.home.approachEyebrow}</p>
+      <h2 class="section-title" data-reveal>{t.home.approachTitle}</h2>
     </div>
-    <div class="introduction__body" data-reveal>
-      <p class="lede">{t.home.introBody}</p>
-      <div class="principles">
-        <article><span>01</span><h3>{locale === 'en' ? 'Clarity before complexity' : 'La clarté avant la complexité'}</h3></article>
-        <article><span>02</span><h3>{locale === 'en' ? 'Judgement before noise' : 'Le discernement avant le bruit'}</h3></article>
-        <article><span>03</span><h3>{locale === 'en' ? 'Progress you can see' : 'Des avancées visibles'}</h3></article>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="expertise content-section" id="expertise">
-  <div class="container">
-    <div class="expertise__head" data-reveal>
-      <div><p class="eyebrow">{t.home.expertiseEyebrow}</p><h2 class="section-title">{t.home.expertiseTitle}</h2></div>
-      <p class="lede">{t.home.expertiseBody}</p>
-    </div>
-    <div class="expertise__grid">
-      {services.map((service) => {
-        const item = service[locale];
-        return (
-          <a class="expertise-card" href={`${pathFor(locale, 'services')}${service.slug}/`} data-reveal>
-            <span class="expertise-card__number">{service.number}</span>
-            <div><h3>{item.title}</h3><p>{item.summary}</p></div>
-            <span class="expertise-card__arrow" aria-hidden="true">↗</span>
-          </a>
-        );
-      })}
-    </div>
-  </div>
-</section>
-
-<section class="process content-section">
-  <div class="container process__layout">
-    <div class="process__sticky" data-reveal>
-      <p class="eyebrow">{t.home.approachEyebrow}</p>
-      <h2 class="section-title">{t.home.approachTitle}</h2>
-      <div class="process__seal"><img src="/brand/munge-eba-logo-transparent.png" alt="" width="240" height="240" loading="lazy" /><small>Est. in practice<br />8+ years</small></div>
-    </div>
-    <div class="process__steps">
+    <div class="method__steps">
       {t.process.map(([number, title, body]) => (
-        <article data-reveal><span>{number}</span><h3>{title}</h3><p>{body}</p></article>
+        <article data-reveal>
+          <span>{number}</span>
+          <div><h3>{title}</h3><p>{body}</p></div>
+        </article>
       ))}
     </div>
   </div>
 </section>
 
-<section class="profile content-section">
-  <div class="container profile__grid">
-    <div class="profile__visual" data-reveal>
-      <div class="profile__halo"></div>
-      <img src="/brand/munge-eba-logo-transparent.png" alt="Munge Eba & Co. Law Firm gold monogram" width="700" height="700" loading="lazy" />
-      <div class="profile__years"><strong>{firm.years}</strong><span>{locale === 'en' ? 'years in practice' : 'années de pratique'}</span></div>
+<section class="partner content-section">
+  <div class="container partner__grid">
+    <div class="partner__credential" data-reveal>
+      <div class="partner__tenure">
+        <span>{locale === 'en' ? 'In practice since' : 'En exercice depuis'}</span>
+        <strong>{firm.practiceSince}</strong>
+      </div>
+      <div class="partner__identity">
+        <p>{firm.title[locale]}</p>
+        <strong>{firm.principal}</strong>
+        <span>{firm.admission[locale]}</span>
+      </div>
     </div>
-    <div class="profile__copy" data-reveal>
-      <p class="eyebrow">{t.home.profileEyebrow}</p>
-      <h2 class="section-title">{t.home.profileTitle}</h2>
-      <p class="lede">{t.home.profileBody}</p>
-      <a class="button button--ghost" href={pathFor(locale, 'about')}>{locale === 'en' ? 'Meet the principal' : 'Découvrir l’avocate'}</a>
-    </div>
-  </div>
-</section>
-
-<section class="standard content-section">
-  <div class="container standard__grid">
-    <p class="eyebrow" data-reveal>{t.home.standardEyebrow}</p>
-    <div data-reveal>
-      <h2 class="section-title">{t.home.standardTitle}</h2>
-      <p class="lede">{t.home.standardBody}</p>
-    </div>
-    <div class="standard__metrics" data-reveal>
-      <article><strong>01</strong><span>{locale === 'en' ? 'Direct access to counsel' : 'Accès direct à l’avocate'}</span></article>
-      <article><strong>02</strong><span>{locale === 'en' ? 'Bilingual service' : 'Service bilingue'}</span></article>
-      <article><strong>03</strong><span>{locale === 'en' ? 'Decisions explained clearly' : 'Décisions expliquées clairement'}</span></article>
+    <div class="partner__copy">
+      <p class="eyebrow" data-reveal>{t.home.profileEyebrow}</p>
+      <h2 class="section-title" data-reveal>{t.home.profileTitle}</h2>
+      <p class="lede" data-reveal>{t.home.profileBody}</p>
+      <a class="text-link" href={pathFor(locale, 'about')} data-reveal>{locale === 'en' ? 'About the firm' : 'Découvrir le cabinet'}</a>
     </div>
   </div>
 </section>
 
-<!-- Intentionally empty until client-approved, attributable testimony is supplied. -->
-<Testimonials locale={locale} items={[]} />
+<section class="audiences content-section">
+  <div class="container audiences__heading">
+    <p class="eyebrow" data-reveal>{t.home.audienceEyebrow}</p>
+    <div><h2 class="section-title" data-reveal>{t.home.audienceTitle}</h2><p class="lede" data-reveal>{t.home.audienceBody}</p></div>
+  </div>
+  <div class="container audience-grid">
+    {audiences.map(([title, body], index) => (
+      <article data-reveal><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p></article>
+    ))}
+  </div>
+</section>
 
-<ContactForm locale={locale} />
+<ContactForm locale={locale} compact />
 
 <style>
-  .manifesto { overflow: hidden; padding: 2rem 0; border-block: 1px solid var(--line); background: var(--gold); }
-  .manifesto__marquee { width: max-content; display: flex; align-items: center; gap: 2rem; animation: marquee 24s linear infinite; }
-  .manifesto__marquee span { font: 500 clamp(2rem, 4vw, 4.2rem)/1 var(--serif); letter-spacing: -.03em; white-space: nowrap; }
-  .manifesto__marquee i { font-style: normal; }
-  @keyframes marquee { to { transform: translateX(-50%); } }
-  .introduction__grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(4rem, 9vw, 10rem); }
-  .introduction .eyebrow, .expertise .eyebrow, .process .eyebrow, .profile .eyebrow, .standard .eyebrow { margin-bottom: 2rem; }
-  .introduction__body { padding-top: 5rem; }
-  .principles { margin-top: 4rem; border-top: 1px solid var(--line); }
-  .principles article { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
-  .principles span { color: var(--gold); font-size: .62rem; }
-  .principles h3 { margin: 0; font: 500 1.55rem/1 var(--serif); }
-  .expertise { background: var(--ink); color: var(--paper-bright); }
-  .expertise__head { display: grid; grid-template-columns: 1fr .65fr; gap: 5rem; align-items: end; margin-bottom: 5rem; }
-  .expertise .eyebrow { color: var(--gold-light); }
-  .expertise .lede { color: rgba(255,255,255,.6); }
-  .expertise__grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(255,255,255,.16); }
-  .expertise-card { min-height: 24rem; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-right: 1px solid rgba(255,255,255,.16); border-bottom: 1px solid rgba(255,255,255,.16); overflow: hidden; transition: background .45s var(--ease); }
-  .expertise-card:nth-child(2n) { border-right: 0; }
-  .expertise-card::before { content: ''; position: absolute; width: 25rem; aspect-ratio: 1; left: var(--x, 50%); top: var(--y, 50%); background: radial-gradient(circle, rgba(198,152,61,.23), transparent 65%); transform: translate(-50%,-50%); opacity: 0; transition: opacity .4s; pointer-events: none; }
-  .expertise-card:hover::before { opacity: 1; }
-  .expertise-card__number { color: var(--gold-light); font-size: .64rem; }
-  .expertise-card h3 { margin: 0 0 1rem; font: 500 clamp(2rem, 3.5vw, 4rem)/.95 var(--serif); letter-spacing: -.04em; }
-  .expertise-card p { max-width: 29rem; margin: 0; color: rgba(255,255,255,.56); line-height: 1.65; }
-  .expertise-card__arrow { position: absolute; right: 2rem; top: 2rem; font-size: 1.3rem; transition: transform .35s; }
-  .expertise-card:hover .expertise-card__arrow { transform: rotate(45deg); }
-  .process { background: #ded7ca; }
-  .process__layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 8rem; }
-  .process__sticky { position: sticky; top: 9rem; height: fit-content; }
-  .process__seal { width: 9rem; aspect-ratio: 1; display: grid; place-items: center; margin: 4rem 0 0 auto; border: 1px solid var(--oxblood); border-radius: 50%; text-align: center; transform: rotate(-8deg); }
-  .process__seal img { width: 4.8rem; height: 4.8rem; object-fit: contain; }
-  .process__seal small { font-size: .52rem; line-height: 1.4; letter-spacing: .1em; text-transform: uppercase; }
-  .process__steps article { display: grid; grid-template-columns: 4rem 1fr; padding: 3rem 0; border-top: 1px solid rgba(21,19,16,.26); }
-  .process__steps article:last-child { border-bottom: 1px solid rgba(21,19,16,.26); }
-  .process__steps span { color: var(--oxblood); font-size: .65rem; }
-  .process__steps h3 { margin: 0 0 1rem; font: 500 clamp(2rem, 4vw, 4.5rem)/.95 var(--serif); letter-spacing: -.04em; }
-  .process__steps p { grid-column: 2; max-width: 33rem; margin: 0; color: var(--muted); line-height: 1.7; }
-  .profile { background: var(--oxblood-dark); color: var(--paper-bright); }
-  .profile__grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8rem; }
-  .profile__visual { position: relative; min-height: 41rem; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle, rgba(198,152,61,.18), transparent 58%); }
-  .profile__visual::after { content: ''; position: absolute; inset: 1.5rem; border: 1px solid rgba(255,255,255,.13); }
-  .profile__visual img { position: relative; z-index: 2; width: min(80%, 31rem); filter: drop-shadow(0 2rem 2.5rem rgba(0,0,0,.35)); transform: translateY(var(--parallax-y, 0px)); will-change: transform; }
-  .profile__halo { position: absolute; width: 24rem; aspect-ratio: 1; border: 1px solid rgba(198,152,61,.4); border-radius: 50%; box-shadow: 0 0 0 4rem rgba(198,152,61,.04), 0 0 0 8rem rgba(198,152,61,.025); }
-  .profile__years { position: absolute; z-index: 3; right: 2.5rem; bottom: 2.5rem; display: grid; padding: 1rem; background: var(--paper-bright); color: var(--ink); }
-  .profile__years strong { font: 500 3.2rem/1 var(--serif); }
-  .profile__years span { max-width: 5rem; font-size: .52rem; letter-spacing: .1em; text-transform: uppercase; }
-  .profile .eyebrow { color: var(--gold-light); }
-  .profile .lede { margin: 2rem 0 3rem; color: rgba(255,255,255,.65); }
-  .standard__grid { display: grid; grid-template-columns: .4fr 1.1fr .7fr; gap: 5rem; }
-  .standard .lede { margin-top: 2rem; }
-  .standard__metrics { border-top: 1px solid var(--line); }
-  .standard__metrics article { display: grid; grid-template-columns: 2rem 1fr; gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
-  .standard__metrics strong { color: var(--gold); font-size: .62rem; }
-  .standard__metrics span { font: 500 1.25rem/1.15 var(--serif); }
-  @media(max-width: 900px) {
-    .introduction__grid, .expertise__head, .process__layout, .profile__grid, .standard__grid { grid-template-columns: 1fr; gap: 4rem; }
-    .introduction__body { padding-top: 0; }
-    .process__sticky { position: static; }
-    .profile__visual { min-height: 32rem; order: 2; }
-    .profile__copy { order: 1; }
-  }
-  @media(max-width: 620px) {
-    .expertise__grid { grid-template-columns: 1fr; }
-    .expertise-card { min-height: 19rem; border-right: 0; padding: 1.5rem; }
-    .process__steps article { grid-template-columns: 2.5rem 1fr; }
-    .profile__visual { min-height: 27rem; }
-  }
-  @media(prefers-reduced-motion: reduce) { .manifesto__marquee { animation: none; } }
-</style>
+  .positioning { background: var(--paper-bright); }
+  .positioning__grid { display: grid; grid-template-columns: minmax(12rem, .38fr) 1fr; gap: clamp(3rem, 9vw, 10rem); align-items: start; }
+  .positioning__body { margin-top: 2.5rem; }
+  .fact-rail { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(4rem, 8vw, 8rem); border-block: 1px solid var(--line); }
+  .fact-rail div { min-height: 8.8rem; display: grid; align-content: space-between; gap: 1rem; padding: 1.35rem 1.6rem 1.5rem 0; border-right: 1px solid var(--line); }
+  .fact-rail div:not(:first-child) { padding-left: 1.6rem; }
+  .fact-rail div:last-child { border-right: 0; }
+  .fact-rail dt { color: var(--muted); font-size: .63rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .fact-rail dd { margin: 0; font: 500 clamp(1.55rem, 2.2vw, 2.45rem)/1.05 var(--serif); }
 
-<script>
-  document.querySelectorAll<HTMLElement>('.expertise-card').forEach((card) => {
-    card.addEventListener('pointermove', (event) => {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty('--x', `${event.clientX - rect.left}px`);
-      card.style.setProperty('--y', `${event.clientY - rect.top}px`);
-    });
-  });
-</script>
+  .practice { background: var(--paper); }
+  .practice__heading { display: grid; grid-template-columns: 1fr minmax(20rem, 32rem); gap: 5rem; align-items: end; margin-bottom: clamp(4rem, 7vw, 7rem); }
+  .practice .eyebrow, .method .eyebrow, .partner .eyebrow, .audiences .eyebrow { margin-bottom: 1.7rem; }
+  .practice__list { border-top: 1px solid var(--line); }
+  .practice-row { display: grid; grid-template-columns: 4rem 1fr auto; gap: clamp(1.5rem, 4vw, 5rem); align-items: center; min-height: 12rem; border-bottom: 1px solid var(--line); transition: background .35s var(--ease), padding .35s var(--ease); }
+  .practice-row:hover { padding-inline: 1.2rem; background: rgba(255,255,255,.43); }
+  .practice-row__number { align-self: start; padding-top: 2.6rem; color: var(--oxblood); font-size: .64rem; font-weight: 700; }
+  .practice-row h3 { margin: 0; font: 500 clamp(2.8rem, 5vw, 6rem)/.9 var(--serif); letter-spacing: -.045em; }
+  .practice-row p { max-width: 42rem; margin: .9rem 0 0; color: var(--muted); line-height: 1.6; }
+  .practice-row__action, .text-link { border-bottom: 1px solid currentColor; padding-bottom: .3rem; color: var(--oxblood); font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+
+  .method { background: var(--ink); color: var(--paper-bright); }
+  .method .eyebrow { color: var(--gold-light); }
+  .method__grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: clamp(4rem, 10vw, 11rem); }
+  .method__heading { align-self: start; position: sticky; top: 9rem; }
+  .method__steps { border-top: 1px solid rgba(255,255,255,.18); }
+  .method__steps article { display: grid; grid-template-columns: 3rem 1fr; gap: 2rem; padding: 2.5rem 0 3.2rem; border-bottom: 1px solid rgba(255,255,255,.18); }
+  .method__steps article > span { color: var(--gold-light); font-size: .62rem; }
+  .method__steps h3 { margin: 0 0 .8rem; font: 500 clamp(2.2rem, 3.7vw, 4.4rem)/.95 var(--serif); }
+  .method__steps p { max-width: 31rem; margin: 0; color: rgba(255,255,255,.65); line-height: 1.7; }
+
+  .partner { background: var(--paper-bright); }
+  .partner__grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(4rem, 10vw, 11rem); align-items: center; }
+  .partner__credential { min-height: 36rem; display: grid; align-content: space-between; padding: clamp(2rem, 5vw, 4rem); background: var(--oxblood-dark); color: white; }
+  .partner__tenure { display: grid; gap: 1rem; }
+  .partner__tenure span { color: var(--gold-light); font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .partner__tenure strong { color: rgba(255,255,255,.95); font: 500 clamp(5rem, 10vw, 9rem)/.8 var(--serif); letter-spacing: -.06em; }
+  .partner__identity { display: grid; gap: .35rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,.22); }
+  .partner__identity p { margin: 0 0 .65rem; color: var(--gold-light); font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .partner__identity strong { font: 500 clamp(2.1rem, 3.4vw, 3.9rem)/1 var(--serif); }
+  .partner__identity span { color: rgba(255,255,255,.65); font-size: .78rem; }
+  .partner__copy .lede { margin-top: 2.2rem; }
+  .partner__copy .text-link { display: inline-block; margin-top: 2.4rem; }
+
+  .audiences { background: var(--paper); }
+  .audiences__heading { display: grid; grid-template-columns: .38fr 1fr; gap: clamp(3rem, 9vw, 10rem); }
+  .audiences__heading .lede { margin-top: 2.2rem; }
+  .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(4rem, 7vw, 7rem); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .audience-grid article { min-height: 20rem; padding: 1.5rem 2rem 2rem 0; border-right: 1px solid var(--line); }
+  .audience-grid article:not(:first-child) { padding-left: 2rem; }
+  .audience-grid article:last-child { border-right: 0; }
+  .audience-grid span { color: var(--oxblood); font-size: .62rem; font-weight: 700; }
+  .audience-grid h3 { margin: 6rem 0 1rem; font: 500 clamp(2rem, 3vw, 3.4rem)/1 var(--serif); }
+  .audience-grid p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+  @media(max-width: 900px) {
+    .positioning__grid, .practice__heading, .method__grid, .partner__grid, .audiences__heading { grid-template-columns: 1fr; gap: 3rem; }
+    .method__heading { position: static; }
+    .partner__credential { min-height: 30rem; }
+  }
+  @media(max-width: 680px) {
+    .fact-rail, .audience-grid { grid-template-columns: 1fr; }
+    .fact-rail div, .fact-rail div:not(:first-child) { min-height: auto; padding: 1.3rem 0; border-right: 0; border-bottom: 1px solid var(--line); }
+    .fact-rail div:last-child { border-bottom: 0; }
+    .practice-row { grid-template-columns: 2rem 1fr; gap: 1rem; min-height: 10rem; padding: 2rem 0; }
+    .practice-row:hover { padding-inline: 0; }
+    .practice-row__number { padding-top: .25rem; }
+    .practice-row__action { grid-column: 2; justify-self: start; }
+    .method__steps article { grid-template-columns: 2rem 1fr; gap: 1rem; }
+    .partner__credential { min-height: 27rem; margin-inline: -14px; }
+    .audience-grid article, .audience-grid article:not(:first-child) { min-height: auto; padding: 1.5rem 0 2.5rem; border-right: 0; border-bottom: 1px solid var(--line); }
+    .audience-grid article:last-child { border-bottom: 0; }
+    .audience-grid h3 { margin-top: 3rem; }
+  }
+</style>

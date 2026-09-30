@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mungeebalaw.com/sitemap-index.xml
+Sitemap: https://mungeebalaw.cm/sitemap-index.xml

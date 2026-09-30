@@ -4,35 +4,108 @@ import ContactForm from './ContactForm.astro';
 import { firm, type Locale } from '@/lib/site';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
-const c = locale === 'en' ? {
-  eyebrow: 'The firm', title: 'Serious about the law. Human about the work.', body: 'Munge Eba Law is a Douala-based practice led by Munge Eba Ngwesse, serving clients with rigour, discretion and direct access to counsel.',
-  profile: 'A practice built on responsibility.', p1: 'For more than eight years, Munge Eba Ngwesse has advised clients through decisions in which legal detail and practical consequence cannot be separated.', p2: 'The firm’s approach is intentionally personal. Matters are examined carefully, advice is expressed plainly, and clients are kept close to the reasoning that shapes each next step.',
-  principles: ['Clarity', 'Discretion', 'Preparation', 'Accountability']
-} : {
-  eyebrow: 'Le cabinet', title: 'Exigeant sur le droit. Humain dans l’accompagnement.', body: 'Munge Eba Law est un cabinet basé à Douala et dirigé par Munge Eba Ngwesse, au service de ses clients avec rigueur, discrétion et accès direct à l’avocate.',
-  profile: 'Une pratique fondée sur la responsabilité.', p1: 'Depuis plus de huit ans, Munge Eba Ngwesse accompagne ses clients dans des décisions où le détail juridique et la conséquence pratique sont indissociables.', p2: 'L’approche du cabinet est volontairement personnelle. Chaque dossier est étudié avec soin, le conseil est formulé clairement et le client reste associé au raisonnement qui détermine chaque étape.',
-  principles: ['Clarté', 'Discrétion', 'Préparation', 'Responsabilité']
-};
+const c = locale === 'en'
+  ? {
+      eyebrow: 'The firm',
+      title: 'A bilingual Cameroonian law firm.',
+      body: 'Munge Eba & Co. Law Firm is a bilingual Cameroonian practice advising individuals, foreign investors and NGOs.',
+      profileEyebrow: 'Managing Partner',
+      profileTitle: 'Munge Eba Ngwesse',
+      p1: 'Munge Eba Ngwesse is an Advocate at the Cameroon Bar and has practised since 2018. She works in English and French.',
+      p2: 'Her approach begins with the client’s objective. The legal and regulatory position is then examined in its practical context so that the advice is clear, responsive and adapted to the matter.',
+      valuesEyebrow: 'Professional foundations',
+      valuesTitle: 'Honesty, integrity and professionalism.',
+      values: ['Honesty', 'Integrity', 'Professionalism'],
+      focusEyebrow: 'Client focus',
+      focusTitle: 'For investors, NGOs and individuals.',
+      focusBody: 'The firm has a particular interest in supporting foreign investors seeking to open and develop businesses in Cameroon, and NGOs working in human rights. It also advises individuals who need direct legal guidance.',
+    }
+  : {
+      eyebrow: 'Le cabinet',
+      title: 'Un cabinet camerounais bilingue.',
+      body: 'Munge Eba & Co. Law Firm est un cabinet camerounais bilingue au service des particuliers, des investisseurs étrangers et des ONG.',
+      profileEyebrow: 'Managing Partner',
+      profileTitle: 'Munge Eba Ngwesse',
+      p1: 'Munge Eba Ngwesse est Avocate au Barreau du Cameroun et exerce depuis 2018. Elle travaille en français et en anglais.',
+      p2: 'Son approche commence par l’objectif du client. La situation juridique et réglementaire est ensuite examinée dans son contexte pratique afin de proposer un conseil clair, réactif et adapté au dossier.',
+      valuesEyebrow: 'Fondements professionnels',
+      valuesTitle: 'Honnêteté, intégrité et professionnalisme.',
+      values: ['Honnêteté', 'Intégrité', 'Professionnalisme'],
+      focusEyebrow: 'Clients accompagnés',
+      focusTitle: 'Pour les investisseurs, les ONG et les particuliers.',
+      focusBody: 'Le cabinet s’intéresse particulièrement à l’accompagnement des investisseurs étrangers qui souhaitent ouvrir et développer leurs entreprises au Cameroun, ainsi qu’aux ONG actives dans les droits humains. Il conseille également les particuliers qui recherchent un accompagnement juridique direct.',
+    };
 ---
+
 <PageHero eyebrow={c.eyebrow} title={c.title} body={c.body} />
-<section class="about-profile content-section">
-  <div class="container about-profile__grid">
-    <div class="about-profile__mark" data-reveal><img src="/brand/munge-eba-logo-transparent.png" alt="Munge Eba & Co. Law Firm" width="700" height="700" /></div>
-    <div data-reveal><p class="eyebrow">{firm.principal}</p><h2 class="section-title">{c.profile}</h2><p class="lede">{c.p1}</p><p class="lede">{c.p2}</p></div>
+
+<section class="profile content-section">
+  <div class="container profile__grid">
+    <div class="profile__identity" data-reveal>
+      <div class="profile__tenure"><span>{locale === 'en' ? 'In practice since' : 'En exercice depuis'}</span><strong>{firm.practiceSince}</strong></div>
+      <div class="profile__credentials"><span>{firm.admission[locale]}</span><span>{locale === 'en' ? 'English and French' : 'Français et anglais'}</span></div>
+    </div>
+    <div class="profile__copy">
+      <p class="eyebrow" data-reveal>{c.profileEyebrow}</p>
+      <h2 class="section-title" data-reveal>{c.profileTitle}</h2>
+      <p class="profile__lead" data-reveal>{c.p1}</p>
+      <p class="lede" data-reveal>{c.p2}</p>
+    </div>
   </div>
-  <div class="container about-principles">{c.principles.map((item, i) => <article data-reveal><span>0{i + 1}</span><h3>{item}</h3></article>)}</div>
 </section>
-<ContactForm locale={locale} />
+
+<section class="values content-section">
+  <div class="container values__heading">
+    <p class="eyebrow" data-reveal>{c.valuesEyebrow}</p>
+    <h2 class="section-title" data-reveal>{c.valuesTitle}</h2>
+  </div>
+  <div class="container about-principles">
+    {c.values.map((title, index) => (
+      <article data-reveal><span>0{index + 1}</span><h3>{title}</h3></article>
+    ))}
+  </div>
+</section>
+
+<section class="focus content-section">
+  <div class="container focus__grid">
+    <p class="eyebrow" data-reveal>{c.focusEyebrow}</p>
+    <div><h2 class="section-title" data-reveal>{c.focusTitle}</h2><p class="lede" data-reveal>{c.focusBody}</p></div>
+  </div>
+</section>
+
+<ContactForm locale={locale} compact />
+
 <style>
-  .about-profile__grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 8rem; align-items: center; }
-  .about-profile__mark { min-height: 38rem; display: grid; place-items: center; background: var(--oxblood-dark); overflow: hidden; }
-  .about-profile__mark img { width: min(80%, 30rem); filter: drop-shadow(0 2rem 3rem rgba(0,0,0,.4)); transform: translateY(var(--parallax-y, 0px)); will-change: transform; }
-  .about-profile .eyebrow { margin-bottom: 2rem; }
-  .about-profile .lede { margin-top: 2rem; }
-  .about-principles { margin-top: 8rem; display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--line); }
-  .about-principles article { min-height: 14rem; padding: 1.5rem; border-right: 1px solid var(--line); }
+  .profile { background: var(--paper-bright); }
+  .profile__grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(4rem, 10vw, 11rem); align-items: center; }
+  .profile__identity { min-height: 35rem; display: grid; align-content: space-between; padding: clamp(2rem, 5vw, 4rem); background: var(--oxblood-dark); color: white; }
+  .profile__tenure { display: grid; gap: 1rem; }
+  .profile__tenure span { color: var(--gold-light); font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .profile__tenure strong { color: rgba(255,255,255,.95); font: 500 clamp(5rem, 10vw, 9rem)/.8 var(--serif); letter-spacing: -.06em; }
+  .profile__credentials { display: grid; gap: .8rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.66); font-size: .69rem; letter-spacing: .06em; text-transform: uppercase; }
+  .profile__copy .eyebrow { margin-bottom: 1.7rem; }
+  .profile__lead { max-width: 31rem; margin: 2.5rem 0 1.6rem; font: 500 clamp(1.65rem, 2.8vw, 3rem)/1.15 var(--serif); }
+  .values { background: var(--paper); }
+  .values__heading { display: grid; grid-template-columns: .38fr 1fr; gap: clamp(3rem, 9vw, 10rem); }
+  .about-principles { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(4rem, 8vw, 8rem); border-block: 1px solid var(--line); }
+  .about-principles article { min-height: 21rem; display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem 2rem 2rem 0; border-right: 1px solid var(--line); }
+  .about-principles article:not(:first-child) { padding-left: 2rem; }
   .about-principles article:last-child { border-right: 0; }
-  .about-principles span { color: var(--gold); font-size: .62rem; }
-  .about-principles h3 { margin: 5rem 0 0; font: 500 2rem/1 var(--serif); }
-  @media(max-width: 850px){ .about-profile__grid { grid-template-columns: 1fr; gap: 4rem; } .about-principles { grid-template-columns: 1fr 1fr; } .about-profile__mark { min-height: 28rem; } }
+  .about-principles span { color: var(--oxblood); font-size: .62rem; font-weight: 700; }
+  .about-principles h3 { margin: 6rem 0 1rem; font: 500 clamp(2rem, 3vw, 3.4rem)/1 var(--serif); }
+  .focus { background: var(--ink); color: var(--paper-bright); }
+  .focus .eyebrow { color: var(--gold-light); }
+  .focus__grid { display: grid; grid-template-columns: .38fr 1fr; gap: clamp(3rem, 9vw, 10rem); }
+  .focus .lede { margin-top: 2.4rem; color: rgba(255,255,255,.64); }
+  @media(max-width: 850px) {
+    .profile__grid, .values__heading, .focus__grid { grid-template-columns: 1fr; gap: 3rem; }
+    .profile__identity { min-height: 29rem; }
+  }
+  @media(max-width: 650px) {
+    .profile__identity { min-height: 26rem; margin-inline: -14px; }
+    .about-principles { grid-template-columns: 1fr; }
+    .about-principles article, .about-principles article:not(:first-child) { min-height: auto; padding: 1.5rem 0 2.5rem; border-right: 0; border-bottom: 1px solid var(--line); }
+    .about-principles article:last-child { border-bottom: 0; }
+    .about-principles h3 { margin-top: 3rem; }
+  }
 </style>

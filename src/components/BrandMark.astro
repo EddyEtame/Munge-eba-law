@@ -1,14 +1,16 @@
 ---
-interface Props { compact?: boolean; light?: boolean; }
-const { compact = false, light = false } = Astro.props;
+import type { Locale } from '@/lib/site';
+interface Props { compact?: boolean; light?: boolean; href?: string; locale?: Locale; }
+const { compact = false, light = false, href = '/', locale = 'en' } = Astro.props;
+const homeLabel = locale === 'en' ? 'home' : 'accueil';
 ---
 
-<a class:list={['brand', { 'brand--compact': compact, 'brand--light': light }]} href="/" aria-label="Munge Eba & Co. Law Firm — home">
-  <img src="/brand/munge-eba-logo-transparent.png" alt="Munge Eba & Co. Law Firm" width="2048" height="2048" />
+<a class:list={['brand', { 'brand--compact': compact, 'brand--light': light }]} href={href} aria-label={`Munge Eba & Co. Law Firm — ${homeLabel}`}>
+  <img src="/brand/munge-eba-logo-256.webp" srcset="/brand/munge-eba-logo-256.webp 256w, /brand/munge-eba-logo-512.webp 512w" sizes="122px" alt="Munge Eba & Co. Law Firm" width="256" height="256" />
 </a>
 
 <style>
-  .brand { display: inline-flex; align-items: center; width: 7rem; height: 5.5rem; }
+  .brand { display: inline-flex; align-items: center; width: 7.6rem; height: 5.6rem; }
   .brand img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 .35rem .65rem rgba(0,0,0,.18)); }
   .brand--compact { width: 4rem; height: 4rem; }
   .brand--light img { filter: drop-shadow(0 .35rem .8rem rgba(0,0,0,.42)); }

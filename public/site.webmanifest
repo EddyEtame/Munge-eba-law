@@ -1,14 +1,20 @@
 {
-  "name": "Munge Eba Law",
-  "short_name": "Munge Eba",
+  "name": "Munge Eba & Co. Law Firm",
+  "short_name": "Munge Eba & Co.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f2eee5",
   "theme_color": "#151310",
   "icons": [
     {
-      "src": "/brand/munge-eba-logo-transparent.png",
-      "sizes": "2048x2048",
+      "src": "/brand/munge-eba-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/munge-eba-logo-512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     }

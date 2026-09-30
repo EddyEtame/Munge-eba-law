@@ -1,25 +1,27 @@
 ---
 import BrandMark from './BrandMark.astro';
-import { content, pathFor, type Locale } from '@/lib/site';
-interface Props { locale: Locale; transparent?: boolean; }
-const { locale, transparent = false } = Astro.props;
+import { content, firm, pathFor, type Locale } from '@/lib/site';
+interface Props { locale: Locale; transparent?: boolean; alternatePath?: string; }
+const { locale, transparent = false, alternatePath } = Astro.props;
 const t = content[locale];
-const alternate = locale === 'en' ? '/fr/' : '/';
+const labels = locale === 'en'
+  ? { primary: 'Primary navigation', open: 'Open navigation', close: 'Close navigation' }
+  : { primary: 'Navigation principale', open: 'Ouvrir la navigation', close: 'Fermer la navigation' };
 ---
 
 <header class:list={['site-header', { 'site-header--transparent': transparent }]} data-header>
   <div class="site-header__inner">
-    <BrandMark light={transparent} />
-    <nav class="site-nav" aria-label="Primary navigation">
+    <BrandMark light={transparent} href={pathFor(locale, 'home')} {locale} />
+    <nav class="site-nav" aria-label={labels.primary}>
       <a href={pathFor(locale, 'services')}>{t.nav.services}</a>
       <a href={pathFor(locale, 'about')}>{t.nav.about}</a>
       <a href={pathFor(locale, 'contact')}>{t.nav.contact}</a>
     </nav>
     <div class="site-header__actions">
-      <a class="locale-link" href={alternate} hreflang={locale === 'en' ? 'fr' : 'en'}>{t.alternateLabel}</a>
-      <a class="header-cta" href={pathFor(locale, 'contact')}>{t.nav.contact}<span aria-hidden="true">↗</span></a>
+      {alternatePath && <a class="locale-link" href={alternatePath} hreflang={locale === 'en' ? 'fr' : 'en'}>{t.alternateLabel}</a>}
+      <a class="header-cta" href={pathFor(locale, 'contact')}>{t.nav.contact}</a>
       <details class="menu-shell">
-        <summary class="menu-toggle" aria-label="Open navigation"><span></span><span></span></summary>
+        <summary class="menu-toggle" aria-label={labels.open} data-open-label={labels.open} data-close-label={labels.close}><span></span><span></span></summary>
         <div class="mobile-menu" id="mobile-menu">
           <div class="mobile-menu__links">
             <a href={pathFor(locale, 'home')}>{t.nav.home}</a>
@@ -27,7 +29,10 @@ const alternate = locale === 'en' ? '/fr/' : '/';
             <a href={pathFor(locale, 'about')}>{t.nav.about}</a>
             <a href={pathFor(locale, 'contact')}>{t.nav.contact}</a>
           </div>
-          <p>Munge Eba & Co. · Douala, Cameroon</p>
+          <div class="mobile-menu__footer">
+            <p>{firm.legalName}</p>
+            <a href={`tel:${firm.phoneHref}`}>{firm.phoneDisplay}</a>
+          </div>
         </div>
       </details>
     </div>
@@ -35,7 +40,7 @@ const alternate = locale === 'en' ? '/fr/' : '/';
 </header>
 
 <style>
-  .site-header { position: fixed; inset: 0 0 auto; z-index: 80; color: var(--ink); transition: color .4s, background .4s, transform .4s; }
+  .site-header { position: fixed; inset: 0 0 auto; z-index: 80; color: var(--ink); transition: color .35s, background .35s; }
   .site-header::after { content: ''; position: absolute; inset: auto 2rem 0; border-bottom: 1px solid rgba(21,19,16,.16); transition: border-color .4s; }
   .site-header.is-scrolled { background: rgba(242,238,229,.91); backdrop-filter: blur(18px); }
   .site-header.is-scrolled :global(.brand--light) { color: var(--ink); }
@@ -55,16 +60,23 @@ const alternate = locale === 'en' ? '/fr/' : '/';
   .menu-toggle span + span { transform: translateY(3px); }
   .menu-shell[open] .menu-toggle span { transform: rotate(45deg); }
   .menu-shell[open] .menu-toggle span + span { transform: rotate(-45deg); }
-  .mobile-menu { position: fixed; inset: 0; z-index: -1; display: grid; align-content: center; gap: 4rem; padding: 8rem 2rem 3rem; background: var(--ink); color: var(--paper-bright); opacity: 0; visibility: hidden; transform: translateY(-1rem); transition: .4s var(--ease); }
+  .mobile-menu { position: fixed; inset: 0; z-index: -1; width: 100vw; height: 100dvh; display: grid; align-content: center; gap: 4rem; overflow-y: auto; overscroll-behavior: contain; padding: max(8rem, env(safe-area-inset-top)) max(1.25rem, 5vw) max(2.5rem, env(safe-area-inset-bottom)); background: var(--ink); color: var(--paper-bright); opacity: 0; visibility: hidden; transform: translateY(-.75rem); transition: opacity .35s var(--ease), visibility .35s, transform .35s var(--ease); }
   .menu-shell[open] .mobile-menu { opacity: 1; visibility: visible; transform: none; }
   .mobile-menu__links { display: grid; }
   .mobile-menu__links a { padding: .7rem 0; border-bottom: 1px solid rgba(255,255,255,.13); font: 500 clamp(2.8rem, 12vw, 5rem)/1 var(--serif); }
-  .mobile-menu p { color: rgba(255,255,255,.55); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; }
+  .mobile-menu__footer { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1.4rem; border-top: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.55); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; }
+  .mobile-menu__footer p { margin: 0; }
+  :global(body:has(.menu-shell[open])) { overflow: hidden; }
   @media (max-width: 900px) {
     .site-header__inner { width: calc(100% - 32px); height: 5.2rem; grid-template-columns: 1fr auto; }
     .site-nav, .header-cta { display: none; }
     .menu-shell { display: block; }
     .menu-toggle { display: grid; }
+  }
+  @media (max-width: 900px) and (max-height: 520px) {
+    .mobile-menu { align-content: start; gap: 1.25rem; padding-top: max(5.5rem, env(safe-area-inset-top)); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+    .mobile-menu__links a { padding: .35rem 0; font-size: clamp(2rem, 10vh, 2.7rem); }
+    .mobile-menu__footer { padding-top: .8rem; }
   }
 </style>
 
@@ -73,4 +85,10 @@ const alternate = locale === 'en' ? '/fr/' : '/';
   const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 30);
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
+  document.querySelectorAll<HTMLDetailsElement>('.menu-shell').forEach((menu) => {
+    const toggle = menu.querySelector<HTMLElement>('.menu-toggle');
+    const updateLabel = () => toggle?.setAttribute('aria-label', menu.open ? toggle.dataset.closeLabel || '' : toggle.dataset.openLabel || '');
+    updateLabel();
+    menu.addEventListener('toggle', updateLabel);
+  });
 </script>

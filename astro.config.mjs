@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://mungeebalaw.com',
+  site: process.env.SITE_URL || 'https://mungeebalaw.cm',
   output: 'static',
   integrations: [sitemap()],
   build: {

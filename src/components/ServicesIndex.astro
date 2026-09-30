@@ -5,30 +5,70 @@ import { services, pathFor, type Locale } from '@/lib/site';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = locale === 'en'
-  ? { eyebrow: 'Our expertise', title: 'Practical counsel, precisely applied.', body: 'Our areas of focus are connected by one standard: advice must be technically sound, commercially aware and clear enough to act on.', list: 'Selected matters' }
-  : { eyebrow: 'Notre expertise', title: 'Un conseil pratique, appliqué avec précision.', body: 'Nos domaines d’intervention partagent une même exigence : le conseil doit être juridiquement solide, conscient des réalités et suffisamment clair pour agir.', list: 'Interventions sélectionnées' };
+  ? {
+      eyebrow: 'Areas of practice',
+      title: 'Business law, human rights and conflict management.',
+      body: 'The firm advises on business law, human rights and conflict management. The precise scope of work is established after reviewing the matter.',
+      scope: 'How the work is framed',
+      action: 'View this practice area',
+    }
+  : {
+      eyebrow: 'Domaines d’intervention',
+      title: 'Droit des affaires, droits humains et gestion des conflits.',
+      body: 'Le cabinet intervient en droit des affaires, en droits humains et en gestion des conflits. Le périmètre précis est défini après l’examen du dossier.',
+      scope: 'Cadre de travail',
+      action: 'Voir ce domaine',
+    };
 ---
-<PageHero {...copy} />
+
+<PageHero eyebrow={copy.eyebrow} title={copy.title} body={copy.body} />
+
 <section class="services-index content-section">
+  <div class="container services-index__intro">
+    <p class="eyebrow" data-reveal>{locale === 'en' ? 'Practice overview' : 'Vue d’ensemble'}</p>
+    <p data-reveal>{locale === 'en' ? 'Each engagement begins with the client’s objective, the relevant facts and the applicable Cameroonian legal framework.' : 'Chaque mission commence par l’objectif du client, les faits pertinents et le cadre juridique camerounais applicable.'}</p>
+  </div>
+
   <div class="container services-index__list">
     {services.map((service) => {
       const item = service[locale];
-      return <a href={`${pathFor(locale, 'services')}${service.slug}/`} class="service-row" data-reveal>
-        <span>{service.number}</span>
-        <div><h2>{item.title}</h2><p>{item.description}</p></div>
-        <i aria-hidden="true">↗</i>
-      </a>;
+      return (
+        <article class="service-row" data-reveal>
+          <div class="service-row__number">{service.number}</div>
+          <div class="service-row__main">
+            <h2>{item.title}</h2>
+            <p>{item.description}</p>
+            <a href={`${pathFor(locale, 'services')}${service.slug}/`}>{copy.action}</a>
+          </div>
+          <div class="service-row__scope">
+            <span>{copy.scope}</span>
+            <ul>{item.matters.map((matter) => <li>{matter}</li>)}</ul>
+          </div>
+        </article>
+      );
     })}
   </div>
 </section>
-<ContactForm locale={locale} />
+
+<ContactForm locale={locale} compact />
+
 <style>
+  .services-index { background: var(--paper-bright); }
+  .services-index__intro { display: grid; grid-template-columns: .42fr 1fr; gap: clamp(3rem, 9vw, 10rem); margin-bottom: clamp(4rem, 8vw, 8rem); }
+  .services-index__intro > p:last-child { max-width: 48rem; margin: 0; font: 500 clamp(1.9rem, 3.2vw, 3.8rem)/1.08 var(--serif); letter-spacing: -.025em; }
   .services-index__list { border-top: 1px solid var(--line); }
-  .service-row { display: grid; grid-template-columns: 5rem 1fr auto; gap: 2rem; padding: 3rem 0; border-bottom: 1px solid var(--line); transition: padding .4s var(--ease), color .4s; }
-  .service-row:hover { padding-inline: 1.5rem; color: var(--oxblood); }
-  .service-row > span { color: var(--gold); font-size: .65rem; }
-  .service-row h2 { margin: 0 0 1rem; font: 500 clamp(2.3rem, 4.3vw, 5.3rem)/.9 var(--serif); letter-spacing: -.045em; }
-  .service-row p { max-width: 48rem; margin: 0; color: var(--muted); line-height: 1.65; }
-  .service-row i { font-style: normal; font-size: 1.3rem; }
-  @media(max-width: 600px){ .service-row { grid-template-columns: 2rem 1fr; } .service-row i { display: none; } }
+  .service-row { display: grid; grid-template-columns: 4rem minmax(0, 1.2fr) minmax(17rem, .65fr); gap: clamp(2rem, 6vw, 7rem); padding: clamp(3rem, 6vw, 6rem) 0; border-bottom: 1px solid var(--line); }
+  .service-row__number { color: var(--oxblood); font-size: .63rem; font-weight: 700; }
+  .service-row h2 { margin: -.3rem 0 1.4rem; font: 500 clamp(3rem, 5.6vw, 6.6rem)/.88 var(--serif); letter-spacing: -.05em; }
+  .service-row__main > p { max-width: 44rem; margin: 0; color: var(--muted); line-height: 1.75; }
+  .service-row__main > a { display: inline-block; margin-top: 2rem; border-bottom: 1px solid currentColor; padding-bottom: .3rem; color: var(--oxblood); font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .service-row__scope { padding-top: .25rem; }
+  .service-row__scope > span { display: block; margin-bottom: 1rem; color: var(--muted); font-size: .59rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .service-row ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .service-row li { padding: .9rem 0; border-bottom: 1px solid var(--line); font-size: .78rem; line-height: 1.4; }
+  @media(max-width: 850px) {
+    .services-index__intro, .service-row { grid-template-columns: 1fr; gap: 2.2rem; }
+    .service-row__number { order: -1; }
+    .service-row__scope { max-width: 36rem; }
+  }
 </style>
