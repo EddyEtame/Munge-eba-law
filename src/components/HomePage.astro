@@ -1,0 +1,187 @@
+---
+import CinematicHero from './CinematicHero.astro';
+import ContactForm from './ContactForm.astro';
+import Testimonials from './Testimonials.astro';
+import { content, services, firm, pathFor, type Locale } from '@/lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = content[locale];
+---
+
+<CinematicHero locale={locale} />
+
+<section class="manifesto" aria-label="Our point of view">
+  <div class="manifesto__marquee" aria-hidden="true">
+    <span>{t.home.statement}</span><i>✦</i><span>{t.home.statement}</span><i>✦</i>
+  </div>
+</section>
+
+<section class="introduction content-section" id="approach">
+  <div class="container introduction__grid">
+    <div class="introduction__header" data-reveal>
+      <p class="eyebrow">{t.home.introEyebrow}</p>
+      <h2 class="section-title">{t.home.introTitle}</h2>
+    </div>
+    <div class="introduction__body" data-reveal>
+      <p class="lede">{t.home.introBody}</p>
+      <div class="principles">
+        <article><span>01</span><h3>{locale === 'en' ? 'Clarity before complexity' : 'La clarté avant la complexité'}</h3></article>
+        <article><span>02</span><h3>{locale === 'en' ? 'Judgement before noise' : 'Le discernement avant le bruit'}</h3></article>
+        <article><span>03</span><h3>{locale === 'en' ? 'Progress you can see' : 'Des avancées visibles'}</h3></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="expertise content-section" id="expertise">
+  <div class="container">
+    <div class="expertise__head" data-reveal>
+      <div><p class="eyebrow">{t.home.expertiseEyebrow}</p><h2 class="section-title">{t.home.expertiseTitle}</h2></div>
+      <p class="lede">{t.home.expertiseBody}</p>
+    </div>
+    <div class="expertise__grid">
+      {services.map((service) => {
+        const item = service[locale];
+        return (
+          <a class="expertise-card" href={`${pathFor(locale, 'services')}${service.slug}/`} data-reveal>
+            <span class="expertise-card__number">{service.number}</span>
+            <div><h3>{item.title}</h3><p>{item.summary}</p></div>
+            <span class="expertise-card__arrow" aria-hidden="true">↗</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<section class="process content-section">
+  <div class="container process__layout">
+    <div class="process__sticky" data-reveal>
+      <p class="eyebrow">{t.home.approachEyebrow}</p>
+      <h2 class="section-title">{t.home.approachTitle}</h2>
+      <div class="process__seal"><img src="/brand/munge-eba-logo-transparent.png" alt="" width="240" height="240" loading="lazy" /><small>Est. in practice<br />8+ years</small></div>
+    </div>
+    <div class="process__steps">
+      {t.process.map(([number, title, body]) => (
+        <article data-reveal><span>{number}</span><h3>{title}</h3><p>{body}</p></article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="profile content-section">
+  <div class="container profile__grid">
+    <div class="profile__visual" data-reveal>
+      <div class="profile__halo"></div>
+      <img src="/brand/munge-eba-logo-transparent.png" alt="Munge Eba & Co. Law Firm gold monogram" width="700" height="700" loading="lazy" />
+      <div class="profile__years"><strong>{firm.years}</strong><span>{locale === 'en' ? 'years in practice' : 'années de pratique'}</span></div>
+    </div>
+    <div class="profile__copy" data-reveal>
+      <p class="eyebrow">{t.home.profileEyebrow}</p>
+      <h2 class="section-title">{t.home.profileTitle}</h2>
+      <p class="lede">{t.home.profileBody}</p>
+      <a class="button button--ghost" href={pathFor(locale, 'about')}>{locale === 'en' ? 'Meet the principal' : 'Découvrir l’avocate'}</a>
+    </div>
+  </div>
+</section>
+
+<section class="standard content-section">
+  <div class="container standard__grid">
+    <p class="eyebrow" data-reveal>{t.home.standardEyebrow}</p>
+    <div data-reveal>
+      <h2 class="section-title">{t.home.standardTitle}</h2>
+      <p class="lede">{t.home.standardBody}</p>
+    </div>
+    <div class="standard__metrics" data-reveal>
+      <article><strong>01</strong><span>{locale === 'en' ? 'Direct access to counsel' : 'Accès direct à l’avocate'}</span></article>
+      <article><strong>02</strong><span>{locale === 'en' ? 'Bilingual service' : 'Service bilingue'}</span></article>
+      <article><strong>03</strong><span>{locale === 'en' ? 'Decisions explained clearly' : 'Décisions expliquées clairement'}</span></article>
+    </div>
+  </div>
+</section>
+
+<!-- Intentionally empty until client-approved, attributable testimony is supplied. -->
+<Testimonials locale={locale} items={[]} />
+
+<ContactForm locale={locale} />
+
+<style>
+  .manifesto { overflow: hidden; padding: 2rem 0; border-block: 1px solid var(--line); background: var(--gold); }
+  .manifesto__marquee { width: max-content; display: flex; align-items: center; gap: 2rem; animation: marquee 24s linear infinite; }
+  .manifesto__marquee span { font: 500 clamp(2rem, 4vw, 4.2rem)/1 var(--serif); letter-spacing: -.03em; white-space: nowrap; }
+  .manifesto__marquee i { font-style: normal; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  .introduction__grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(4rem, 9vw, 10rem); }
+  .introduction .eyebrow, .expertise .eyebrow, .process .eyebrow, .profile .eyebrow, .standard .eyebrow { margin-bottom: 2rem; }
+  .introduction__body { padding-top: 5rem; }
+  .principles { margin-top: 4rem; border-top: 1px solid var(--line); }
+  .principles article { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .principles span { color: var(--gold); font-size: .62rem; }
+  .principles h3 { margin: 0; font: 500 1.55rem/1 var(--serif); }
+  .expertise { background: var(--ink); color: var(--paper-bright); }
+  .expertise__head { display: grid; grid-template-columns: 1fr .65fr; gap: 5rem; align-items: end; margin-bottom: 5rem; }
+  .expertise .eyebrow { color: var(--gold-light); }
+  .expertise .lede { color: rgba(255,255,255,.6); }
+  .expertise__grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(255,255,255,.16); }
+  .expertise-card { min-height: 24rem; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-right: 1px solid rgba(255,255,255,.16); border-bottom: 1px solid rgba(255,255,255,.16); overflow: hidden; transition: background .45s var(--ease); }
+  .expertise-card:nth-child(2n) { border-right: 0; }
+  .expertise-card::before { content: ''; position: absolute; width: 25rem; aspect-ratio: 1; left: var(--x, 50%); top: var(--y, 50%); background: radial-gradient(circle, rgba(198,152,61,.23), transparent 65%); transform: translate(-50%,-50%); opacity: 0; transition: opacity .4s; pointer-events: none; }
+  .expertise-card:hover::before { opacity: 1; }
+  .expertise-card__number { color: var(--gold-light); font-size: .64rem; }
+  .expertise-card h3 { margin: 0 0 1rem; font: 500 clamp(2rem, 3.5vw, 4rem)/.95 var(--serif); letter-spacing: -.04em; }
+  .expertise-card p { max-width: 29rem; margin: 0; color: rgba(255,255,255,.56); line-height: 1.65; }
+  .expertise-card__arrow { position: absolute; right: 2rem; top: 2rem; font-size: 1.3rem; transition: transform .35s; }
+  .expertise-card:hover .expertise-card__arrow { transform: rotate(45deg); }
+  .process { background: #ded7ca; }
+  .process__layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 8rem; }
+  .process__sticky { position: sticky; top: 9rem; height: fit-content; }
+  .process__seal { width: 9rem; aspect-ratio: 1; display: grid; place-items: center; margin: 4rem 0 0 auto; border: 1px solid var(--oxblood); border-radius: 50%; text-align: center; transform: rotate(-8deg); }
+  .process__seal img { width: 4.8rem; height: 4.8rem; object-fit: contain; }
+  .process__seal small { font-size: .52rem; line-height: 1.4; letter-spacing: .1em; text-transform: uppercase; }
+  .process__steps article { display: grid; grid-template-columns: 4rem 1fr; padding: 3rem 0; border-top: 1px solid rgba(21,19,16,.26); }
+  .process__steps article:last-child { border-bottom: 1px solid rgba(21,19,16,.26); }
+  .process__steps span { color: var(--oxblood); font-size: .65rem; }
+  .process__steps h3 { margin: 0 0 1rem; font: 500 clamp(2rem, 4vw, 4.5rem)/.95 var(--serif); letter-spacing: -.04em; }
+  .process__steps p { grid-column: 2; max-width: 33rem; margin: 0; color: var(--muted); line-height: 1.7; }
+  .profile { background: var(--oxblood-dark); color: var(--paper-bright); }
+  .profile__grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 8rem; }
+  .profile__visual { position: relative; min-height: 41rem; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle, rgba(198,152,61,.18), transparent 58%); }
+  .profile__visual::after { content: ''; position: absolute; inset: 1.5rem; border: 1px solid rgba(255,255,255,.13); }
+  .profile__visual img { position: relative; z-index: 2; width: min(80%, 31rem); filter: drop-shadow(0 2rem 2.5rem rgba(0,0,0,.35)); transform: translateY(var(--parallax-y, 0px)); will-change: transform; }
+  .profile__halo { position: absolute; width: 24rem; aspect-ratio: 1; border: 1px solid rgba(198,152,61,.4); border-radius: 50%; box-shadow: 0 0 0 4rem rgba(198,152,61,.04), 0 0 0 8rem rgba(198,152,61,.025); }
+  .profile__years { position: absolute; z-index: 3; right: 2.5rem; bottom: 2.5rem; display: grid; padding: 1rem; background: var(--paper-bright); color: var(--ink); }
+  .profile__years strong { font: 500 3.2rem/1 var(--serif); }
+  .profile__years span { max-width: 5rem; font-size: .52rem; letter-spacing: .1em; text-transform: uppercase; }
+  .profile .eyebrow { color: var(--gold-light); }
+  .profile .lede { margin: 2rem 0 3rem; color: rgba(255,255,255,.65); }
+  .standard__grid { display: grid; grid-template-columns: .4fr 1.1fr .7fr; gap: 5rem; }
+  .standard .lede { margin-top: 2rem; }
+  .standard__metrics { border-top: 1px solid var(--line); }
+  .standard__metrics article { display: grid; grid-template-columns: 2rem 1fr; gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+  .standard__metrics strong { color: var(--gold); font-size: .62rem; }
+  .standard__metrics span { font: 500 1.25rem/1.15 var(--serif); }
+  @media(max-width: 900px) {
+    .introduction__grid, .expertise__head, .process__layout, .profile__grid, .standard__grid { grid-template-columns: 1fr; gap: 4rem; }
+    .introduction__body { padding-top: 0; }
+    .process__sticky { position: static; }
+    .profile__visual { min-height: 32rem; order: 2; }
+    .profile__copy { order: 1; }
+  }
+  @media(max-width: 620px) {
+    .expertise__grid { grid-template-columns: 1fr; }
+    .expertise-card { min-height: 19rem; border-right: 0; padding: 1.5rem; }
+    .process__steps article { grid-template-columns: 2.5rem 1fr; }
+    .profile__visual { min-height: 27rem; }
+  }
+  @media(prefers-reduced-motion: reduce) { .manifesto__marquee { animation: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.expertise-card').forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--x', `${event.clientX - rect.left}px`);
+      card.style.setProperty('--y', `${event.clientY - rect.top}px`);
+    });
+  });
+</script>

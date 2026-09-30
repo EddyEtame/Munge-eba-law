@@ -1,70 +1,54 @@
-# Trinity Law Firm Website
+# Munge Eba Law
 
-A modern, responsive law firm website built with React and Framer Motion animations.
+Bilingual, cinematic website for **Munge Eba & Co. Law Firm**, led by Munge Eba Ngwesse in Douala, Cameroon.
 
-## Features
+## Stack
 
-- **Responsive Design**: Works on all devices
-- **Smooth Animations**: Powered by Framer Motion
-- **Modern UI**: Clean, professional design
-- **Interactive Elements**: Hover effects and smooth transitions
-- **Contact Form**: Functional contact form with validation
+- Astro 7 static output
+- Native WebGL shader for the entrance sequence
+- Local self-hosted Cormorant Garamond and Manrope fonts
+- Vercel Function contact delivery through Resend
+- English and French crawlable routes
 
-## Dependencies
+## Local development
 
-The website uses CDN links for all major dependencies:
-- **React 18**: UI framework
-- **React DOM**: React rendering
-- **Framer Motion**: Animation library
-- **Tailwind CSS**: Utility-first CSS framework
-- **Babel**: JavaScript compiler
+The project requires Node.js 22.19 or newer.
 
-## Running Locally
-
-### Option 1: Using npm serve (Recommended)
 ```bash
-npm run serve
-```
-Then open http://localhost:3000 in your browser.
-
-### Option 2: Using Python HTTP server
-```bash
+npm install
 npm run dev
 ```
-Then open http://localhost:8000 in your browser.
 
-### Option 3: Direct file opening
-Simply double-click `index.html` to open it in your default browser.
+Validation:
 
-## Project Structure
-
-```
-Law firm/
-├── index.html          # Main HTML file with embedded React component
-├── Law Firm.js         # Original React component (for reference)
-├── package.json        # Project configuration
-└── README.md          # This file
+```bash
+npm run check
+npm run build
+npm audit
 ```
 
-## Customization
+## Contact delivery
 
-The website is highly customizable through the component props:
-- `primaryColor`: Main brand color (default: #0a2351)
-- `accentColor`: Accent color (default: #bf9b30)
-- `ctaText`: Call-to-action button text
-- `animationDuration`: Animation speed
-- `animationDelay`: Stagger delay between elements
+Copy `.env.example` to `.env` locally or configure the same variables in Vercel:
 
-## Browser Support
+- `SITE_URL`
+- `RESEND_API_KEY`
+- `CONTACT_FROM_EMAIL` — must use a domain verified in Resend
+- `CONTACT_TO_EMAIL` — defaults to `mungeebalaw@gmail.com`
 
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
+The browser form never claims success unless `/api/contact` returns a successful response. Do not treat local UI validation as proof of live email delivery.
 
-## Notes
+## Hero media handoff
 
-- All dependencies are loaded from CDN for simplicity
-- The website works offline once loaded
-- No build process required - just open the HTML file
+The current hero is a production-safe procedural WebGL entrance. When footage is ready, provide:
 
+1. Exterior approach: 8–12 seconds, stable forward movement, 16:9 master, clean view of the entrance.
+2. Door transition: 3–5 seconds, camera crossing the threshold.
+3. Interior reveal: 8–12 seconds, slow controlled motion with usable dark or uncluttered space for text.
+4. Preferred delivery: ProRes or high-bitrate H.264 master. Web versions will be prepared as MP4/WebM with a poster image.
+
+The media directory is `public/media/`. Video texture integration should happen only after the actual clips are approved and compressed.
+
+## Publication boundary
+
+Before launch, confirm the questionnaire in `CLIENT-QUESTIONS.md`, the final domain, verified sender domain, professional registration details, practice-area wording, office hours and approved portrait. See `PROJECT-STATE.md` for the exact handoff.

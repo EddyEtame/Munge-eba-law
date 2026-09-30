@@ -1,0 +1,21 @@
+---
+interface Props { eyebrow: string; title: string; body: string; }
+const { eyebrow, title, body } = Astro.props;
+---
+<section class="page-hero">
+  <div class="page-hero__mark" aria-hidden="true"><img src="/brand/munge-eba-logo-transparent.png" alt="" width="640" height="640" /></div>
+  <div class="container page-hero__grid">
+    <div><p class="eyebrow">{eyebrow}</p><h1 class="display" data-motion-title>{title}</h1></div>
+    <p class="lede" data-reveal>{body}</p>
+  </div>
+</section>
+
+<style>
+  .page-hero { position: relative; overflow: hidden; }
+  .page-hero__mark { position: absolute; right: 2vw; top: 50%; width: min(42vw, 38rem); transform: translateY(calc(-44% + var(--parallax-y, 0px))) rotate(7deg); opacity: .075; filter: saturate(.7); animation: mark-float 9s ease-in-out infinite alternate; will-change: transform; }
+  .page-hero__mark img { width: 100%; height: auto; }
+  .page-hero__grid .lede { transition-delay: .45s; }
+  @keyframes mark-float { to { transform: translateY(calc(-49% + var(--parallax-y, 0px))) rotate(3deg) scale(1.035); } }
+  @media(max-width: 700px) { .page-hero__mark { width: 75vw; right: -18vw; } }
+  @media(prefers-reduced-motion: reduce) { .page-hero__mark { animation: none; } }
+</style>

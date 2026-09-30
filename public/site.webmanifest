@@ -1,0 +1,16 @@
+{
+  "name": "Munge Eba Law",
+  "short_name": "Munge Eba",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2eee5",
+  "theme_color": "#151310",
+  "icons": [
+    {
+      "src": "/brand/munge-eba-logo-transparent.png",
+      "sizes": "2048x2048",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

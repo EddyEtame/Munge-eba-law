@@ -1,0 +1,34 @@
+---
+import PageHero from './PageHero.astro';
+import ContactForm from './ContactForm.astro';
+import { services, pathFor, type Locale } from '@/lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = locale === 'en'
+  ? { eyebrow: 'Our expertise', title: 'Practical counsel, precisely applied.', body: 'Our areas of focus are connected by one standard: advice must be technically sound, commercially aware and clear enough to act on.', list: 'Selected matters' }
+  : { eyebrow: 'Notre expertise', title: 'Un conseil pratique, appliqué avec précision.', body: 'Nos domaines d’intervention partagent une même exigence : le conseil doit être juridiquement solide, conscient des réalités et suffisamment clair pour agir.', list: 'Interventions sélectionnées' };
+---
+<PageHero {...copy} />
+<section class="services-index content-section">
+  <div class="container services-index__list">
+    {services.map((service) => {
+      const item = service[locale];
+      return <a href={`${pathFor(locale, 'services')}${service.slug}/`} class="service-row" data-reveal>
+        <span>{service.number}</span>
+        <div><h2>{item.title}</h2><p>{item.description}</p></div>
+        <i aria-hidden="true">↗</i>
+      </a>;
+    })}
+  </div>
+</section>
+<ContactForm locale={locale} />
+<style>
+  .services-index__list { border-top: 1px solid var(--line); }
+  .service-row { display: grid; grid-template-columns: 5rem 1fr auto; gap: 2rem; padding: 3rem 0; border-bottom: 1px solid var(--line); transition: padding .4s var(--ease), color .4s; }
+  .service-row:hover { padding-inline: 1.5rem; color: var(--oxblood); }
+  .service-row > span { color: var(--gold); font-size: .65rem; }
+  .service-row h2 { margin: 0 0 1rem; font: 500 clamp(2.3rem, 4.3vw, 5.3rem)/.9 var(--serif); letter-spacing: -.045em; }
+  .service-row p { max-width: 48rem; margin: 0; color: var(--muted); line-height: 1.65; }
+  .service-row i { font-style: normal; font-size: 1.3rem; }
+  @media(max-width: 600px){ .service-row { grid-template-columns: 2rem 1fr; } .service-row i { display: none; } }
+</style>

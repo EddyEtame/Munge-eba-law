@@ -1,0 +1,41 @@
+---
+import PageHero from './PageHero.astro';
+import { firm, type Locale } from '@/lib/site';
+interface Props { locale: Locale; kind: 'privacy' | 'legal'; }
+const { locale, kind } = Astro.props;
+const isPrivacy = kind === 'privacy';
+const c = locale === 'en' ? {
+  privacy: { eyebrow: 'Privacy', title: 'Your information deserves restraint.', body: 'This notice explains what the website collects, why it is used and the choices available to you.' },
+  legal: { eyebrow: 'Legal notice', title: 'Information about this website.', body: 'Publisher, contact and responsible-use information for the Munge Eba Law website.' },
+} : {
+  privacy: { eyebrow: 'Confidentialité', title: 'Vos informations méritent la retenue.', body: 'Cette notice explique les données collectées par le site, leur utilisation et les choix dont vous disposez.' },
+  legal: { eyebrow: 'Mentions légales', title: 'Informations relatives à ce site.', body: 'Éditeur, coordonnées et conditions d’utilisation du site de Munge Eba Law.' },
+};
+const head = c[kind];
+---
+<PageHero {...head} />
+<section class="content-section"><div class="container prose">
+  {isPrivacy ? (locale === 'en' ? <>
+    <h2>Information we collect</h2><p>When you request a consultation, we collect the name, email address, telephone number, selected area of enquiry and message that you choose to provide. Basic technical information may also be processed to protect the form from abuse and to understand aggregate website performance.</p>
+    <h2>Why we use it</h2><p>We use enquiry information only to perform an initial conflict check, understand the nature of the request and respond about a possible consultation. Sending an enquiry does not create a lawyer–client relationship.</p>
+    <h2>Confidential and urgent information</h2><p>Do not send confidential documents, court deadlines, privileged material or urgent instructions through this website. A lawyer–client relationship begins only after the firm expressly agrees to act.</p>
+    <h2>Service providers and retention</h2><p>The website may use Vercel for hosting, Resend for transactional email and privacy-conscious aggregate analytics. These providers process limited data to deliver their services. Enquiries are retained only as long as reasonably necessary for conflict checking, response, legal obligations and security.</p>
+    <h2>Your choices</h2><p>You may request access, correction or deletion of personal information, subject to legal and professional obligations, by emailing <a href={`mailto:${firm.email}`}>{firm.email}</a>.</p>
+  </> : <>
+    <h2>Données collectées</h2><p>Lorsque vous demandez une consultation, nous collectons le nom, l’adresse électronique, le numéro de téléphone, le domaine sélectionné et le message que vous choisissez de transmettre. Des informations techniques élémentaires peuvent aussi être traitées afin de protéger le formulaire et de mesurer les performances globales du site.</p>
+    <h2>Finalités</h2><p>Les informations sont utilisées uniquement pour effectuer une première vérification de conflit, comprendre la demande et répondre au sujet d’une éventuelle consultation. L’envoi d’une demande ne crée pas de relation avocat–client.</p>
+    <h2>Informations confidentielles et urgentes</h2><p>N’envoyez pas de documents confidentiels, de délais judiciaires, d’éléments privilégiés ou d’instructions urgentes via ce site. La relation avocat–client ne commence qu’après acceptation expresse du dossier par le cabinet.</p>
+    <h2>Prestataires et conservation</h2><p>Le site peut utiliser Vercel pour l’hébergement, Resend pour les courriels transactionnels et une mesure d’audience agrégée respectueuse de la vie privée. Les demandes sont conservées uniquement pendant la durée raisonnablement nécessaire à la vérification de conflit, à la réponse, aux obligations légales et à la sécurité.</p>
+    <h2>Vos droits</h2><p>Vous pouvez demander l’accès, la rectification ou la suppression de vos informations, sous réserve des obligations légales et professionnelles, en écrivant à <a href={`mailto:${firm.email}`}>{firm.email}</a>.</p>
+  </>) : (locale === 'en' ? <>
+    <h2>Publisher</h2><p>{firm.legalName}, led by {firm.principal}. Office: {firm.address.en} Email: <a href={`mailto:${firm.email}`}>{firm.email}</a>. Telephone: <a href={`tel:${firm.phoneHref}`}>{firm.phoneDisplay}</a>.</p>
+    <h2>Legal information, not legal advice</h2><p>The contents of this website are general information only. They are not legal advice and should not be relied on for a specific matter. Laws and procedures may change, and outcomes depend on the facts.</p>
+    <h2>No lawyer–client relationship</h2><p>Visiting this site, sending an email or submitting a consultation request does not create a lawyer–client relationship. The firm must first complete its checks and expressly confirm an engagement.</p>
+    <h2>Intellectual property</h2><p>Unless otherwise stated, the site design, copy and brand materials belong to {firm.legalName}. They may not be reproduced for commercial use without permission.</p>
+  </> : <>
+    <h2>Éditeur</h2><p>{firm.legalName}, dirigé par {firm.principal}. Cabinet : {firm.address.fr} Courriel : <a href={`mailto:${firm.email}`}>{firm.email}</a>. Téléphone : <a href={`tel:${firm.phoneHref}`}>{firm.phoneDisplay}</a>.</p>
+    <h2>Information générale, non conseil juridique</h2><p>Le contenu de ce site est fourni à titre d’information générale. Il ne constitue pas un avis juridique et ne doit pas fonder une décision relative à un dossier particulier. Les règles et procédures peuvent évoluer et tout résultat dépend des faits.</p>
+    <h2>Absence de relation avocat–client</h2><p>La visite du site, l’envoi d’un courriel ou d’une demande de consultation ne crée pas de relation avocat–client. Le cabinet doit effectuer ses vérifications et confirmer expressément son intervention.</p>
+    <h2>Propriété intellectuelle</h2><p>Sauf indication contraire, la conception du site, ses textes et ses éléments de marque appartiennent à {firm.legalName}. Toute reproduction commerciale est interdite sans autorisation.</p>
+  </>)}
+</div></section>

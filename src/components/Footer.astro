@@ -1,0 +1,53 @@
+---
+import BrandMark from './BrandMark.astro';
+import { content, firm, pathFor, type Locale } from '@/lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = content[locale];
+---
+
+<footer class="footer">
+  <div class="container footer__top">
+    <div>
+      <BrandMark light />
+      <p class="footer__tag serif">{t.footerTag}</p>
+    </div>
+    <div class="footer__nav">
+      <div>
+        <span>Navigate</span>
+        <a href={pathFor(locale, 'services')}>{t.nav.services}</a>
+        <a href={pathFor(locale, 'about')}>{t.nav.about}</a>
+        <a href={pathFor(locale, 'contact')}>{t.nav.contact}</a>
+      </div>
+      <div>
+        <span>Contact</span>
+        <a href={`tel:${firm.phoneHref}`}>{firm.phoneDisplay}</a>
+        <a href={`mailto:${firm.email}`}>{firm.email}</a>
+        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(firm.mapQuery)}`} target="_blank" rel="noreferrer">Bepanda, Douala ↗</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <p>© {new Date().getFullYear()} {firm.legalName}</p>
+    <div><a href={pathFor(locale, 'privacy')}>Privacy</a><a href={pathFor(locale, 'legal')}>Legal notice</a></div>
+  </div>
+</footer>
+
+<style>
+  .footer { position: relative; z-index: 1; padding: 6rem 0 2rem; background: #0e0d0b; color: var(--paper-bright); }
+  .footer__top { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding-bottom: 7rem; }
+  .footer__tag { margin: 4rem 0 0; max-width: 8ch; font-size: clamp(3.1rem, 6vw, 6.8rem); line-height: .83; letter-spacing: -.05em; }
+  .footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding-top: .5rem; }
+  .footer__nav > div { display: flex; flex-direction: column; gap: 1rem; }
+  .footer__nav span { margin-bottom: 1rem; color: var(--gold-light); font-size: .64rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+  .footer__nav a { width: fit-content; color: rgba(255,255,255,.68); font-size: .9rem; transition: color .25s; }
+  .footer__nav a:hover { color: var(--gold-light); }
+  .footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-top: 1.8rem; border-top: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.43); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; }
+  .footer__bottom div { display: flex; gap: 1.5rem; }
+  @media(max-width: 800px) {
+    .footer__top { grid-template-columns: 1fr; padding-bottom: 4rem; }
+    .footer__tag { margin-top: 3rem; }
+    .footer__bottom { align-items: flex-start; flex-direction: column; }
+  }
+  @media(max-width: 480px) { .footer__nav { grid-template-columns: 1fr; gap: 3rem; } }
+</style>

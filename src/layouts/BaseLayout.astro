@@ -1,0 +1,103 @@
+---
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import MotionLayer from '@/components/MotionLayer.astro';
+import '@/styles/global.css';
+import { firm, type Locale } from '@/lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  locale?: Locale;
+  image?: string;
+  transparentHeader?: boolean;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  locale = 'en',
+  image = '/brand/munge-eba-logo-original.png',
+  transparentHeader = false,
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const pageTitle = title === firm.shortName ? title : `${title} · ${firm.shortName}`;
+const translatePath = (path: string, from: Locale) => {
+  if (from === 'en') {
+    if (path === '/') return '/fr/';
+    if (path === '/about/') return '/fr/a-propos/';
+    if (path === '/privacy/') return '/fr/confidentialite/';
+    if (path === '/legal/') return '/fr/mentions-legales/';
+    return `/fr${path}`;
+  }
+  if (path === '/fr/') return '/';
+  if (path === '/fr/a-propos/') return '/about/';
+  if (path === '/fr/confidentialite/') return '/privacy/';
+  if (path === '/fr/mentions-legales/') return '/legal/';
+  return path.replace(/^\/fr/, '') || '/';
+};
+const langLinks = { current: canonical.href, alternate: new URL(translatePath(Astro.url.pathname, locale), Astro.site).href };
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'LegalService',
+  name: firm.legalName,
+  alternateName: firm.shortName,
+  url: Astro.site?.href,
+  logo: new URL('/brand/munge-eba-logo-original.png', Astro.site),
+  image: new URL('/brand/munge-eba-logo-original.png', Astro.site),
+  telephone: firm.phoneHref,
+  email: firm.email,
+  areaServed: [{ '@type': 'Country', name: 'Cameroon' }, { '@type': 'City', name: 'Douala' }],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Opposite the main entrance of Camtel Bepanda, first building on the right, top floor, right-hand side',
+    addressLocality: 'Douala',
+    addressCountry: 'CM',
+  },
+  founder: { '@type': 'Person', name: firm.principal },
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151310" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <title>{pageTitle}</title>
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={locale} href={langLinks.current} />
+    <link rel="alternate" hreflang={locale === 'en' ? 'fr' : 'en'} href={langLinks.alternate} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
+    <link rel="icon" href="/brand/munge-eba-logo-transparent.png" type="image/png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={firm.shortName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta property="og:locale" content={locale === 'en' ? 'en_CM' : 'fr_CM'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <MotionLayer />
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <Header locale={locale} transparent={transparentHeader} />
+    <main class="site-main" id="main-content">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <style is:global>
+      .skip-link { position: fixed; top: .5rem; left: .5rem; z-index: 200; padding: .8rem 1rem; background: var(--paper-bright); color: var(--ink); transform: translateY(-150%); }
+      .skip-link:focus { transform: none; }
+    </style>
+  </body>
+</html>

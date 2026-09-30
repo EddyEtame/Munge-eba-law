@@ -1,0 +1,32 @@
+---
+import PageHero from './PageHero.astro';
+import ContactForm from './ContactForm.astro';
+import { services, pathFor, type Locale } from '@/lib/site';
+interface Props { locale: Locale; slug: string; }
+const { locale, slug } = Astro.props;
+const service = services.find((item) => item.slug === slug)!;
+const item = service[locale];
+---
+<PageHero eyebrow={`${locale === 'en' ? 'Expertise' : 'Expertise'} · ${service.number}`} title={item.title} body={item.summary} />
+<section class="service-detail content-section">
+  <div class="container service-detail__grid">
+    <aside data-reveal><span>{locale === 'en' ? 'Selected matters' : 'Interventions sélectionnées'}</span></aside>
+    <div data-reveal>
+      <p class="service-detail__intro serif">{item.description}</p>
+      <ul>{item.matters.map((matter) => <li>{matter}<span>↗</span></li>)}</ul>
+      <p class="service-detail__note">{locale === 'en' ? 'Every matter turns on its own facts. An initial consultation helps us understand the position and whether we are the right counsel for it.' : 'Chaque dossier dépend de ses faits propres. Une première consultation nous permet de comprendre la situation et de déterminer si notre cabinet est le conseil approprié.'}</p>
+      <a class="button" href={pathFor(locale, 'contact')}>{locale === 'en' ? 'Discuss your matter' : 'Échanger sur votre situation'}</a>
+    </div>
+  </div>
+</section>
+<ContactForm locale={locale} compact />
+<style>
+  .service-detail__grid { display: grid; grid-template-columns: .42fr 1fr; gap: 6rem; }
+  .service-detail aside span { color: var(--oxblood); font-size: .65rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+  .service-detail__intro { margin: 0 0 4rem; font-size: clamp(2rem, 3.5vw, 4rem); line-height: 1.08; letter-spacing: -.025em; }
+  .service-detail ul { list-style: none; padding: 0; margin: 0 0 3rem; border-top: 1px solid var(--line); }
+  .service-detail li { display: flex; justify-content: space-between; gap: 2rem; padding: 1.4rem 0; border-bottom: 1px solid var(--line); }
+  .service-detail li span { color: var(--gold); }
+  .service-detail__note { max-width: 40rem; margin: 0 0 2.5rem; color: var(--muted); line-height: 1.7; }
+  @media(max-width: 760px){ .service-detail__grid { grid-template-columns: 1fr; gap: 2rem; } }
+</style>

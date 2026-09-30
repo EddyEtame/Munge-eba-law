@@ -1,0 +1,76 @@
+---
+import BrandMark from './BrandMark.astro';
+import { content, pathFor, type Locale } from '@/lib/site';
+interface Props { locale: Locale; transparent?: boolean; }
+const { locale, transparent = false } = Astro.props;
+const t = content[locale];
+const alternate = locale === 'en' ? '/fr/' : '/';
+---
+
+<header class:list={['site-header', { 'site-header--transparent': transparent }]} data-header>
+  <div class="site-header__inner">
+    <BrandMark light={transparent} />
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href={pathFor(locale, 'services')}>{t.nav.services}</a>
+      <a href={pathFor(locale, 'about')}>{t.nav.about}</a>
+      <a href={pathFor(locale, 'contact')}>{t.nav.contact}</a>
+    </nav>
+    <div class="site-header__actions">
+      <a class="locale-link" href={alternate} hreflang={locale === 'en' ? 'fr' : 'en'}>{t.alternateLabel}</a>
+      <a class="header-cta" href={pathFor(locale, 'contact')}>{t.nav.contact}<span aria-hidden="true">↗</span></a>
+      <details class="menu-shell">
+        <summary class="menu-toggle" aria-label="Open navigation"><span></span><span></span></summary>
+        <div class="mobile-menu" id="mobile-menu">
+          <div class="mobile-menu__links">
+            <a href={pathFor(locale, 'home')}>{t.nav.home}</a>
+            <a href={pathFor(locale, 'services')}>{t.nav.services}</a>
+            <a href={pathFor(locale, 'about')}>{t.nav.about}</a>
+            <a href={pathFor(locale, 'contact')}>{t.nav.contact}</a>
+          </div>
+          <p>Munge Eba & Co. · Douala, Cameroon</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header { position: fixed; inset: 0 0 auto; z-index: 80; color: var(--ink); transition: color .4s, background .4s, transform .4s; }
+  .site-header::after { content: ''; position: absolute; inset: auto 2rem 0; border-bottom: 1px solid rgba(21,19,16,.16); transition: border-color .4s; }
+  .site-header.is-scrolled { background: rgba(242,238,229,.91); backdrop-filter: blur(18px); }
+  .site-header.is-scrolled :global(.brand--light) { color: var(--ink); }
+  .site-header--transparent:not(.is-scrolled) { color: var(--paper-bright); }
+  .site-header--transparent:not(.is-scrolled)::after { border-color: rgba(255,255,255,.2); }
+  .site-header__inner { width: min(100% - 64px, 1540px); height: 6.3rem; margin: auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .site-nav { display: flex; gap: 2.2rem; }
+  .site-nav a, .locale-link { position: relative; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .site-nav a::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -.45rem; height: 1px; background: var(--gold); transition: right .35s var(--ease); }
+  .site-nav a:hover::after { right: 0; }
+  .site-header__actions { display: flex; justify-content: flex-end; align-items: center; gap: 1.6rem; }
+  .header-cta { display: inline-flex; align-items: center; gap: 1rem; padding: .85rem 1.1rem; border: 1px solid currentColor; font-size: .63rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+  .menu-shell { display: none; }
+  .menu-toggle { width: 2.8rem; height: 2.8rem; border: 1px solid currentColor; background: transparent; place-items: center; cursor: pointer; list-style: none; }
+  .menu-toggle::-webkit-details-marker { display: none; }
+  .menu-toggle span { grid-area: 1/1; width: 1.2rem; height: 1px; background: currentColor; transform: translateY(-3px); transition: transform .3s; }
+  .menu-toggle span + span { transform: translateY(3px); }
+  .menu-shell[open] .menu-toggle span { transform: rotate(45deg); }
+  .menu-shell[open] .menu-toggle span + span { transform: rotate(-45deg); }
+  .mobile-menu { position: fixed; inset: 0; z-index: -1; display: grid; align-content: center; gap: 4rem; padding: 8rem 2rem 3rem; background: var(--ink); color: var(--paper-bright); opacity: 0; visibility: hidden; transform: translateY(-1rem); transition: .4s var(--ease); }
+  .menu-shell[open] .mobile-menu { opacity: 1; visibility: visible; transform: none; }
+  .mobile-menu__links { display: grid; }
+  .mobile-menu__links a { padding: .7rem 0; border-bottom: 1px solid rgba(255,255,255,.13); font: 500 clamp(2.8rem, 12vw, 5rem)/1 var(--serif); }
+  .mobile-menu p { color: rgba(255,255,255,.55); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; }
+  @media (max-width: 900px) {
+    .site-header__inner { width: calc(100% - 32px); height: 5.2rem; grid-template-columns: 1fr auto; }
+    .site-nav, .header-cta { display: none; }
+    .menu-shell { display: block; }
+    .menu-toggle { display: grid; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 30);
+  onScroll();
+  addEventListener('scroll', onScroll, { passive: true });
+</script>

@@ -1,0 +1,119 @@
+---
+import { content, firm, type Locale } from '@/lib/site';
+interface Props { locale: Locale; compact?: boolean; }
+const { locale, compact = false } = Astro.props;
+const t = content[locale].consultation;
+---
+
+<section class:list={['consultation', { 'consultation--compact': compact }]} id="consultation">
+  <div class="container consultation__grid">
+    <div class="consultation__copy" data-reveal>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section-title">{t.title}</h2>
+      <p class="lede">{t.body}</p>
+      <div class="consultation__direct">
+        <a href={`mailto:${firm.email}`}><span>Email</span>{firm.email}</a>
+        <a href={`tel:${firm.phoneHref}`}><span>Telephone</span>{firm.phoneDisplay}</a>
+      </div>
+    </div>
+    <form class="consultation__form" data-contact-form data-reveal>
+      <input class="honeypot" type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <input type="hidden" name="locale" value={locale} />
+      <div class="field">
+        <label for="name">{locale === 'en' ? 'Full name' : 'Nom complet'}</label>
+        <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" />
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required maxlength="160" />
+        </div>
+        <div class="field">
+          <label for="phone">{locale === 'en' ? 'Telephone' : 'Téléphone'}</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="matter">{locale === 'en' ? 'What would you like to discuss?' : 'Que souhaitez-vous aborder ?'}</label>
+        <select id="matter" name="matter" required>
+          <option value="">{locale === 'en' ? 'Select an area' : 'Choisir un domaine'}</option>
+          <option>Business & commercial / Droit des affaires</option>
+          <option>Dispute resolution / Contentieux</option>
+          <option>Property & land / Foncier et immobilier</option>
+          <option>Private client / Particuliers et famille</option>
+          <option>Other / Autre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">{locale === 'en' ? 'Brief message' : 'Message bref'}</label>
+        <textarea id="message" name="message" rows="4" required maxlength="2000"></textarea>
+        <small>{locale === 'en' ? 'Please do not include confidential or time-sensitive information.' : 'N’incluez aucune information confidentielle ou urgente.'}</small>
+      </div>
+      <label class="consent">
+        <input type="checkbox" name="consent" required />
+        <span>{t.consent}</span>
+      </label>
+      <button class="button" type="submit" data-submit data-idle={t.submit} data-sending={t.sending}>{t.submit}</button>
+      <p class="form-status" data-form-status role="status" aria-live="polite" data-success={t.success} data-error={t.error}></p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .consultation { padding: clamp(6rem, 10vw, 10rem) 0; background: var(--paper-bright); }
+  .consultation--compact { padding-top: 2rem; }
+  .consultation__grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: clamp(4rem, 9vw, 10rem); }
+  .consultation__copy { position: sticky; top: 9rem; align-self: start; }
+  .consultation .eyebrow { margin-bottom: 2rem; }
+  .consultation .section-title { margin-bottom: 2rem; }
+  .consultation__direct { margin-top: 4rem; display: grid; border-top: 1px solid var(--line); }
+  .consultation__direct a { display: flex; justify-content: space-between; gap: 2rem; padding: 1.2rem 0; border-bottom: 1px solid var(--line); font-size: .82rem; }
+  .consultation__direct span { color: var(--muted); font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .consultation__form { padding: clamp(1.5rem, 4vw, 4rem); border: 1px solid var(--line); background: var(--paper); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+  .field { display: grid; gap: .6rem; margin-bottom: 1.4rem; }
+  .field label { color: var(--muted); font-size: .62rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+  .field input, .field textarea, .field select { width: 100%; border: 0; border-bottom: 1px solid #9e9688; border-radius: 0; padding: .85rem 0; background: transparent; color: var(--ink); outline: 0; }
+  .field textarea { resize: vertical; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--oxblood); box-shadow: 0 1px 0 var(--oxblood); }
+  .field small { color: var(--muted); font-size: .66rem; line-height: 1.5; }
+  .consent { display: grid; grid-template-columns: auto 1fr; gap: .8rem; align-items: start; margin: 2rem 0; color: var(--muted); font-size: .68rem; line-height: 1.55; }
+  .consent input { margin-top: .2rem; accent-color: var(--oxblood); }
+  .consultation__form .button { width: 100%; }
+  .form-status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--oxblood); font-size: .74rem; line-height: 1.5; }
+  .honeypot { position: absolute !important; left: -10000px !important; }
+  @media(max-width: 900px) {
+    .consultation__grid { grid-template-columns: 1fr; }
+    .consultation__copy { position: static; }
+  }
+  @media(max-width: 560px) { .form-row { grid-template-columns: 1fr; gap: 0; } .consultation__form { margin-inline: -14px; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = form.querySelector<HTMLButtonElement>('[data-submit]');
+      const status = form.querySelector<HTMLElement>('[data-form-status]');
+      if (!button || !status) return;
+      button.disabled = true;
+      button.textContent = button.dataset.sending || 'Sending…';
+      status.textContent = '';
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        if (!response.ok) throw new Error('Request failed');
+        form.reset();
+        status.textContent = status.dataset.success || 'Thank you.';
+      } catch {
+        status.textContent = status.dataset.error || 'Please email us directly.';
+      } finally {
+        button.disabled = false;
+        button.textContent = button.dataset.idle || 'Send';
+      }
+    });
+  });
+</script>
