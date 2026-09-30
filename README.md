@@ -38,16 +38,15 @@ Copy `.env.example` to `.env` locally or configure the same variables in Vercel:
 
 The browser form never claims success unless `/api/contact` returns a successful response. Do not treat local UI validation as proof of live email delivery.
 
-## Hero media handoff
+## Cinematic hero
 
-The current hero is a production-safe procedural WebGL entrance. When footage is ready, provide:
+The hero combines three original generated architectural plates with a procedural WebGL light layer and a timed camera sequence:
 
-1. Exterior approach: 8–12 seconds, stable forward movement, 16:9 master, clean view of the entrance.
-2. Door transition: 3–5 seconds, camera crossing the threshold.
-3. Interior reveal: 8–12 seconds, slow controlled motion with usable dark or uncluttered space for text.
-4. Preferred delivery: ProRes or high-bitrate H.264 master. Web versions will be prepared as MP4/WebM with a poster image.
+1. Rain-darkened Douala exterior approach.
+2. Brass-and-walnut threshold opening.
+3. Warm private consultation interior.
 
-The media directory is `public/media/`. Video texture integration should happen only after the actual clips are approved and compressed.
+The exact supplied logo is composited separately, so generated media never substitutes or redraws the brand mark. Optimized WebP plates live in `public/media/`. They can later be replaced by approved MP4/WebM footage without changing the content or accessibility layer.
 
 ## Publication boundary
 

@@ -6,6 +6,11 @@ const t = content[locale].hero;
 ---
 
 <section class="cinematic" data-cinematic>
+  <div class="cinematic__media" aria-hidden="true">
+    <img class="cinematic__plate cinematic__plate--exterior" src="/media/hero-exterior.webp" alt="" width="1920" height="1080" fetchpriority="high" />
+    <img class="cinematic__plate cinematic__plate--threshold" src="/media/hero-threshold.webp" alt="" width="1920" height="1080" />
+    <img class="cinematic__plate cinematic__plate--interior" src="/media/hero-interior.webp" alt="" width="1920" height="1080" />
+  </div>
   <canvas class="cinematic__canvas" data-portal-canvas aria-hidden="true"></canvas>
   <div class="cinematic__fallback" aria-hidden="true"></div>
   <div class="cinematic__grain" aria-hidden="true"></div>
@@ -26,14 +31,29 @@ const t = content[locale].hero;
       </div>
     </div>
   </div>
-  <div class="cinematic__counter" aria-hidden="true"><span>01</span><i></i><span>03</span></div>
+  <div class="cinematic__counter" aria-hidden="true"><span data-scene-count>01</span><i></i><span>03</span></div>
+  <noscript><style>.cinematic__intro,.cinematic__skip,.cinematic__canvas{display:none}.cinematic__content{opacity:1!important;transform:none!important}.cinematic__plate{animation:none!important}.cinematic__plate--exterior,.cinematic__plate--threshold{opacity:0!important}.cinematic__plate--interior{opacity:1!important;transform:none!important}</style></noscript>
 </section>
 
 <style>
   .cinematic { position: relative; min-height: 100svh; overflow: clip; display: grid; align-items: end; background: #14100e; color: var(--paper-bright); isolation: isolate; }
-  .cinematic__canvas, .cinematic__fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .cinematic__fallback { z-index: -2; background: radial-gradient(circle at 50% 42%, #8e5d28 0, #37161b 22%, #11100d 61%); }
-  .cinematic__grain { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(5,4,3,.5), transparent 48%, rgba(5,4,3,.3)), linear-gradient(0deg, rgba(5,4,3,.56), transparent 60%); }
+  .cinematic__media, .cinematic__canvas, .cinematic__fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .cinematic__media { z-index: 0; overflow: hidden; background: #120e0c; }
+  .cinematic__plate { position: absolute; inset: -2%; width: 104%; height: 104%; object-fit: cover; opacity: 0; transform: scale(1.025); will-change: opacity, transform; }
+  .cinematic__plate--exterior { opacity: 1; animation: exterior-journey 8.6s cubic-bezier(.2,.7,.2,1) both; }
+  .cinematic__plate--threshold { animation: threshold-journey 8.6s cubic-bezier(.2,.7,.2,1) both; }
+  .cinematic__plate--interior { animation: interior-journey 8.6s cubic-bezier(.2,.7,.2,1) both; }
+  .cinematic.is-skipped .cinematic__plate { animation: none; }
+  .cinematic.is-skipped .cinematic__plate--exterior, .cinematic.is-skipped .cinematic__plate--threshold { opacity: 0; }
+  .cinematic.is-skipped .cinematic__plate--interior { opacity: 1; transform: scale(1); }
+  @keyframes exterior-journey { 0% { opacity: 1; transform: scale(1.025); } 48% { opacity: 1; } 62%,100% { opacity: 0; transform: scale(1.13); } }
+  @keyframes threshold-journey { 0%,42% { opacity: 0; transform: scale(1.015); } 53% { opacity: 1; } 76% { opacity: 1; transform: scale(1.105); } 88%,100% { opacity: 0; transform: scale(1.14); } }
+  @keyframes interior-journey { 0%,72% { opacity: 0; transform: scale(1.08); } 87%,100% { opacity: 1; transform: scale(1); } }
+  .cinematic__canvas { z-index: 1; opacity: .32; mix-blend-mode: soft-light; }
+  .cinematic__fallback { z-index: -2; background: #120e0c; }
+  .cinematic__grain { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(5,4,3,.62), transparent 46%, rgba(5,4,3,.38)), linear-gradient(0deg, rgba(5,4,3,.68), transparent 62%); }
+  .cinematic__grain::after { content: ''; position: absolute; inset: -60%; opacity: .14; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E"); animation: grain-walk .28s steps(2) infinite; }
+  @keyframes grain-walk { 0% { transform: translate(0,0); } 25% { transform: translate(3%,-2%); } 50% { transform: translate(-2%,3%); } 75% { transform: translate(2%,2%); } 100% { transform: translate(-3%,-3%); } }
   .cinematic__intro { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; align-content: center; gap: 1rem; background: #0e0d0b; transform-origin: center; }
   .cinematic__intro::before, .cinematic__intro::after { content: ''; position: absolute; top: 0; bottom: 0; width: 50%; background: linear-gradient(90deg, #110f0d, #241714); border-right: 1px solid rgba(198,152,61,.4); }
   .cinematic__intro::before { left: 0; }
@@ -72,6 +92,12 @@ const t = content[locale].hero;
     .text-link { justify-content: center; }
     .cinematic__skip { right: 1rem; bottom: 1rem; }
   }
+  @media(prefers-reduced-motion: reduce) {
+    .cinematic__plate { animation: none; }
+    .cinematic__plate--exterior, .cinematic__plate--threshold { opacity: 0; }
+    .cinematic__plate--interior { opacity: 1; transform: none; }
+    .cinematic__grain::after { animation: none; }
+  }
 </style>
 
 <script>
@@ -80,6 +106,7 @@ const t = content[locale].hero;
   const intro = document.querySelector<HTMLElement>('[data-intro]');
   const contentEl = document.querySelector<HTMLElement>('[data-hero-content]');
   const skip = document.querySelector<HTMLButtonElement>('[data-skip]');
+  const sceneCount = document.querySelector<HTMLElement>('[data-scene-count]');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let frame = 0;
@@ -170,7 +197,7 @@ const t = content[locale].hero;
       const ease = (value: number) => value < .5 ? 4 * value * value * value : 1 - Math.pow(-2 * value + 2, 3) / 2;
       const render = (now = performance.now()) => {
         const elapsed = now - start;
-        if (!completed) open = ease(Math.min(1, Math.max(0, (elapsed - 2100) / 1900)));
+        if (!completed) open = ease(Math.min(1, Math.max(0, (elapsed - 3900) / 2400)));
         gl.uniform1f(uTime, elapsed / 1000);
         gl.uniform1f(uOpen, open);
         gl.uniform2f(uResolution, canvas.width, canvas.height);
@@ -186,9 +213,11 @@ const t = content[locale].hero;
       document.querySelector<HTMLElement>('[data-intro-kicker]')?.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 800, delay: 100, fill: 'both' });
       document.querySelector<HTMLElement>('[data-intro-logo]')?.animate([{ opacity: 0, transform: 'scale(.86)', filter: 'blur(12px)' }, { opacity: 1, transform: 'scale(1)', filter: 'blur(0)' }], { duration: 1400, delay: 250, easing: 'cubic-bezier(.2,.72,.2,1)', fill: 'both' });
       document.querySelector<HTMLElement>('[data-intro-label]')?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, delay: 1200, fill: 'both' });
-      intro?.animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 50% 0 50%)' }], { duration: 1500, delay: 2500, easing: 'cubic-bezier(.65,0,.2,1)', fill: 'forwards' });
-      const finishTimer = window.setTimeout(() => finishIntro(), 3600);
-      skip?.addEventListener('click', () => { clearTimeout(finishTimer); open = 1; finishIntro(); });
+      intro?.animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 50% 0 50%)' }], { duration: 1500, delay: 2200, easing: 'cubic-bezier(.65,0,.2,1)', fill: 'forwards' });
+      window.setTimeout(() => { if (sceneCount) sceneCount.textContent = '02'; }, 4200);
+      window.setTimeout(() => { if (sceneCount) sceneCount.textContent = '03'; }, 6800);
+      const finishTimer = window.setTimeout(() => finishIntro(), 8050);
+      skip?.addEventListener('click', () => { clearTimeout(finishTimer); open = 1; section.classList.add('is-skipped'); if (sceneCount) sceneCount.textContent = '03'; finishIntro(); });
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) cancelAnimationFrame(frame); else render();
       });
